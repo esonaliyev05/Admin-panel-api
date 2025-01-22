@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import "./Login.scss"
 import { useNavigate } from "react-router-dom";
+import "./Login.scss";
 
 const Login = () => {
   const [phone, setPhone] = useState("");
   const [parol, setParol] = useState("");
-  const navigate = useNavigate("")
+  const navigate = useNavigate(); // useNavigate hookini chaqirish
 
   const loginSubmit = (e) => {
     e.preventDefault();
@@ -20,25 +20,23 @@ const Login = () => {
         phone_number: phone,
         password: parol,
       }),
-
     })
       .then((res) => res.json())
       .then((element) => {
-        // console.log();
-        
+        // Agar muvaffaqiyatli ro'yxatdan o'tsa
         if (element?.success) {
-                
-          toast.success("Siz royhatdan otingiz")
-          localStorage.setItem("token" , element?.data?.tokens?.accessToken?.token)
-          navigate("/home")
+          toast.success("Siz royhatdan otingiz");
+          
+          // Tokenni saqlash
+          localStorage.setItem("token", element?.data?.tokens?.accessToken?.token);
 
-        }else {
-           toast.error("Siz royhatdan ota olmadizngiz qaytadan urunip koring!")
+          // Foydalanuvchini home sahifasiga yo'naltirish
+          navigate("/home"); // "/home" manziliga o'tish
+        } else {
+          toast.error("Siz royhatdan o'ta olmadingiz, qayta urunib ko'ring!");
         }
       })
-
       .catch((error) => console.error("Error:", error));
-
   };
 
   return (
