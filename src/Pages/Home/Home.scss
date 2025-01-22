@@ -1,0 +1,69 @@
+/* Asosiy konteyner */
+.home-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #1e90ff, #ff69b4);
+    color: white;
+    font-size: 4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    overflow: hidden;
+  }
+  
+  /* Animatsiya bilan harflar */
+  .animated-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Harf uslubi */
+  .letter {
+    opacity: 0;
+    transform: translateY(50px);
+    animation: fadeInUp 1s ease-out forwards, colorChange 3s infinite, bounce 1s ease-in-out infinite;
+  }
+  
+  /* Harflarning chiqish animatsiyasi */
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Rang o'zgarishi animatsiyasi */
+  @keyframes colorChange {
+    0% {
+      color: #1e90ff;
+    }
+    25% {
+      color: #ff69b4;
+    }
+    50% {
+      color: #ffd700;
+    }
+    75% {
+      color: #32cd32;
+    }
+    100% {
+      color: #1e90ff;
+    }
+  }
+  
+  /* Harflarning tebranish animatsiyasi */
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
