@@ -42,20 +42,31 @@ const Login = () => {
   return (
     <>
       <div className="form-container">
+           
+           <div className="form-text">
+            <h1>Login</h1>
+
+             <div className="img">
+              <img src="https://thumbs.dreamstime.com/b/login-icon-button-vector-illustration-isolated-white-background-126999474.jpg" alt="" />
+             </div>
+
+           </div>
+
         <form onSubmit={loginSubmit}>
+      
           <input
-            onChange={(e) => setPhone(e.target.value)}
-            value={phone}
+            onChange={(e) => setParol(e.target.value)}
+            value={parol}
             type="text"
             placeholder="Name"
             required
             minLength={3}
           />
-          <input
-            onChange={(e) => setParol(e.target.value)}
-            value={parol}
+              <input
+            onChange={(e) => setPhone(e.target.value)}
+            value={phone}
             type="password"
-            placeholder="Password"
+            placeholder="password"
             required
             minLength={3}
           />

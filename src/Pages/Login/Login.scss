@@ -5,6 +5,35 @@
     align-items: center;
     height: 100vh;
     background-color: #f0f2f5;
+    flex-direction: column;
+
+
+    .form-text{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+
+    h1{
+      font-family: monospace;
+      font-size: 65px;
+    }
+
+    .img{
+      width: 80px;
+
+      img{
+        width: 100%;
+        object-fit: cover;
+        background: none;
+      }
+
+    }
+
+    }
+
   }
   
   /* Formning stili */
