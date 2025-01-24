@@ -6,7 +6,7 @@
     height: 100vh;
     background: linear-gradient(135deg, #1e90ff, #ff69b4);
     color: white;
-    font-size: 4rem;
+    font-size: 8rem;
     font-weight: bold;
     text-transform: uppercase;
     overflow: hidden;
@@ -26,11 +26,10 @@
     animation: fadeInUp 1s ease-out forwards, colorChange 3s infinite, bounce 1s ease-in-out infinite;
   }
   
-  /* Harflarning chiqish animatsiyasi */
   @keyframes fadeInUp {
     0% {
       opacity: 0;
-      transform: translateY(50px);
+      transform: translateY(100px);
     }
     100% {
       opacity: 1;
@@ -41,19 +40,19 @@
   /* Rang o'zgarishi animatsiyasi */
   @keyframes colorChange {
     0% {
-      color: #1e90ff;
+      color: black;
     }
     25% {
-      color: #ff69b4;
+      color: black;
     }
     50% {
-      color: #ffd700;
+      color: black;
     }
     75% {
-      color: #32cd32;
+      color: black;
     }
     100% {
-      color: #1e90ff;
+      color: black;
     }
   }
   
