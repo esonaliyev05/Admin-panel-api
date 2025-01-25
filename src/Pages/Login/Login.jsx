@@ -6,7 +6,7 @@ import "./Login.scss";
 const Login = () => {
   const [phone, setPhone] = useState("");
   const [parol, setParol] = useState("");
-  const navigate = useNavigate(); // useNavigate hookini chaqirish
+  const navigate = useNavigate(); 
 
   const loginSubmit = (e) => {
     e.preventDefault();
@@ -23,15 +23,15 @@ const Login = () => {
     })
       .then((res) => res.json())
       .then((element) => {
-        // Agar muvaffaqiyatli ro'yxatdan o'tsa
         if (element?.success) {
           toast.success("Siz royhatdan otingiz");
-          
-          // Tokenni saqlash
-          localStorage.setItem("token", element?.data?.tokens?.accessToken?.token);
 
-          // Foydalanuvchini home sahifasiga yo'naltirish
-          navigate("/home"); // "/home" manziliga o'tish
+          localStorage.setItem(
+            "token",
+            element?.data?.tokens?.accessToken?.token
+          );
+
+          navigate("/home");
         } else {
           toast.error("Siz royhatdan o'ta olmadingiz, qayta urunib ko'ring!");
         }
@@ -42,18 +42,18 @@ const Login = () => {
   return (
     <>
       <div className="form-container">
-           
-           <div className="form-text">
-            <h1>Login</h1>
+        <div className="form-text">
+          <h1>Login</h1>
 
-             <div className="img">
-              <img src="https://thumbs.dreamstime.com/b/login-icon-button-vector-illustration-isolated-white-background-126999474.jpg" alt="" />
-             </div>
-
-           </div>
+          <div className="img">
+            <img
+              src="https://thumbs.dreamstime.com/b/login-icon-button-vector-illustration-isolated-white-background-126999474.jpg"
+              alt=""
+            />
+          </div>
+        </div>
 
         <form onSubmit={loginSubmit}>
-      
           <input
             onChange={(e) => setParol(e.target.value)}
             value={parol}
@@ -62,7 +62,7 @@ const Login = () => {
             required
             minLength={3}
           />
-              <input
+          <input
             onChange={(e) => setPhone(e.target.value)}
             value={phone}
             type="password"
