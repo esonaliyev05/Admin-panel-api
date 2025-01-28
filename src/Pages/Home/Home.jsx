@@ -6,7 +6,7 @@ const Home = () => {
   const [serch, setSearch] = useState(false);
   const [delet, setDelet] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [post , setPost] = useState(false)
+  const [post, setPost] = useState(false);
 
   const navigate = useNavigate();
 
@@ -14,8 +14,8 @@ const Home = () => {
     localStorage.removeItem("tokenchik");
     navigate("/home");
   };
-   
-  // get api 
+
+  // get api
 
   const [data, setData] = useState([]);
 
@@ -29,13 +29,30 @@ const Home = () => {
   }, []);
   console.log(data);
 
-  //  post api 
+  //  post api
 
-  const [modalOpen , setModalOpen] = useState(false)
-  const [nameEn , setNameEn] = useState()
-  const [nameRu , setNameRu] = useState()
-  const [picture , setPicture] = useState()
+  const [modalOpen, setModalOpen] = useState(false);
+  const [nameEn, setNameEn] = useState();
+  const [nameRu, setNameRu] = useState();
+  const [picture, setPicture] = useState();
+  const tokenbek = localStorage.getItem("tokenchik");
+  const formdata = new FormData();
+  formdata.append("name_en", nameEn);
+  formdata.append("name_ru", nameRu);
+  formdata.append("images", picture);
 
+  function creareCategoriy(e) {
+    e.preventDefault();
+    fetch("https://realauto.limsa.uz/api/categories", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${tokenbek}`,
+      },
+      body: formdata,
+    })
+      .then((res) => res.json())
+      .then((elem) => console.log(elem));
+  }
 
   return (
     <div className="home-container">
@@ -51,21 +68,17 @@ const Home = () => {
           </ul>
         </aside>
 
-        {/* Main Content */}
         <main className="main-content">
-          {/* Navbar */}
           <header className="navbar">
             <div className="search-bar">
               <input
                 type="text"
                 placeholder="Search..."
-                // onClick={() => setEdit(true)}
               />
             </div>
             <div className="user-profile">Profile</div>
           </header>
 
-          {/* Dashboard Cards */}
           <section className="dashboard">
             <div className="card">
               Malumot qoshish <br /> <br />
@@ -137,8 +150,8 @@ const Home = () => {
             </div>
           </div>
           <div className={post ? "main-post activ" : "main-post"}>
-          <div className="main-parent">
-              <form>
+            <div className="main-parent">
+              <form onSubmit={creareCategoriy}>
                 <div className="qut-edit" onClick={() => setPost(false)}>
                   X
                 </div>
@@ -148,18 +161,24 @@ const Home = () => {
                   required
                   minLength={3}
                   placeholder="name en"
-                  onChange={(e)=> setNameEn(e?.target.value)}
+                  onChange={(e) => setNameEn(e?.target.value)}
                 />
                 <input
                   type="text"
                   required
                   minLength={3}
                   placeholder="name ru"
-                  onChange={(e)=> setNameRu(e?.target.value)}
+                  onChange={(e) => setNameRu(e?.target.value)}
                 />
-                <input type="file" required onChange={((e) => console.log(e?.target.files[0]))} accept="image/png , image/jpeg" readOnly />
+                <input
+                  type="file"
+                  required
+                  onChange={(e) => setPicture(e?.target.files[0])}
+                  accept="image/png , image/jpeg"
+                  readOnly
+                />
 
-                <button onClick={ () => setModalOpen(true)}>post</button>
+                <button onClick={() => setModalOpen(true)}>post</button>
               </form>
             </div>
           </div>
