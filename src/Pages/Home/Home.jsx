@@ -4,24 +4,28 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Home = () => {
-
   const [search, setSearch] = useState("");
   const [delet, setDelet] = useState(false);
-  // const [edit, setEdit] = useState(false);
   const [post, setPost] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState(null); // To store category to be deleted
-  
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [data, setData] = useState([]);
+  const [edit, setEdit] = useState(false);  // Edit modalni boshqarish uchun
+  const [formData, setFormData] = useState({
+    id: null,
+    nameEn: "",
+    nameRu: "",
+    file: null,
+  });
+
   const navigate = useNavigate();
+  const tokenbek = localStorage.getItem("token");
 
   const logoutFunction = () => {
     localStorage.removeItem("tokenchik");
     navigate("/home");
   };
 
-  // Get API to fetch categories
-  const [data, setData] = useState([]);
-
-  function getCategory() {
+  const getCategory = () => {
     fetch("https://realauto.limsa.uz/api/categories")
       .then((res) => res.json())
       .then((response) => setData(response?.data))
@@ -29,111 +33,59 @@ const Home = () => {
         toast.error("Error fetching data");
         console.error(error);
       });
-  }
+  };
 
   useEffect(() => {
     getCategory();
   }, []);
 
-  // Post API to create category
-  const [nameEn, setNameEn] = useState("");
-  const [nameRu, setNameRu] = useState("");
-  const [picture, setPicture] = useState(null);
-  const tokenbek = localStorage.getItem("token");
+  const handleEdit = (item) => {
+    setFormData({
+      id: item.id,
+      nameEn: item.name_en,
+      nameRu: item.name_ru,
+      file: null,
+    });
+    setEdit(true);  // Modalni ochish
+  };
 
-  const createCategory = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(tokenbek);
+
     if (!tokenbek) {
       toast.error("Token is missing!");
       return;
     }
-    
-
-    if (!nameEn || !nameRu || !picture) {
-      toast.error("Please fill all fields.");
-      return;
-    }
 
     const formdata = new FormData();
-    formdata.append("name_en", nameEn);
-    formdata.append("name_ru", nameRu);
-    formdata.append("images", picture);
+    formdata.append("name_en", formData.nameEn);
+    formdata.append("name_ru", formData.nameRu);
+    if (formData.file) {
+      formdata.append("images", formData.file);
+    }
 
-    // POST request to create category
-    fetch("https://realauto.limsa.uz/api/categories", {
-      method: "POST",
+    fetch(`https://realauto.limsa.uz/api/categories/${formData.id}`, {
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${tokenbek}`,
       },
       body: formdata,
     })
       .then((res) => res.json())
-      .then((elem) => {
-        if (elem?.success) {
-          toast.success(elem?.message);
-          getCategory(); 
-        } else {
-          toast.error(elem?.message || "Unknown error");
-        }
-      })
-      .catch((err) => {
-        toast.error("Error creating category");
-        console.error(err);
-      });
-  };
-
-  // Delete API
-  const deleteCategory = (categoryId) => {
-    if (!tokenbek) {
-      toast.error("Token is missing!");
-      return;
-    }
-
-    fetch(`https://realauto.limsa.uz/api/categories/${categoryId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${tokenbek}`,
-      },
-    })
-      .then((res) => res.json())
       .then((response) => {
         if (response?.success) {
           toast.success(response?.message);
-          getCategory(); 
+          getCategory();
+          setEdit(false);  // Edit modalni yopish
         } else {
           toast.error(response?.message || "Unknown error");
         }
       })
       .catch((err) => {
-        toast.error("Error deleting category");
+        toast.error("Error updating category");
         console.error(err);
       });
   };
-
-
-  const [edit, setEdit] = useState(true);
-  const [formData, setFormData] = useState({
-    nameEn: "",
-    nameRu: "",
-    file: null,
-  });
-
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form Data:", formData);
-    // Bu yerda backendga jo'natish yoki validatsiya qilish mumkin
-    alert("Form successfully submitted!");
-  };
-
 
   return (
     <div className="home-container">
@@ -194,16 +146,17 @@ const Home = () => {
                       />
                     </td>
                     <td>
-                      <button onClick={() => {
-                        setCategoryToDelete(item?.id); 
-                        setDelet(true);
-                        deleteCategory(categoryToDelete);
-                        setDelet(false); 
-                        
-                      }} >Delete</button>
+                      <button
+                        onClick={() => {
+                          setCategoryToDelete(item?.id);
+                          setDelet(true);
+                        }}
+                      >
+                        Delete
+                      </button>
                     </td>
                     <th>
-                      <button onClick={() => setEdit(true)}>Edit</button>
+                      <button onClick={() => handleEdit(item)}>Edit</button>
                     </th>
                   </tr>
                 ))}
@@ -213,44 +166,50 @@ const Home = () => {
 
           {/* Edit Modal */}
           <div className={edit ? "main-push activ" : "main-push"}>
-      <div className="main-parent">
-        <form onSubmit={handleSubmit}>
-          <div className="qut-edit" onClick={() => setEdit(false)}>
-            X
+            <div className="main-parent">
+              <form onSubmit={handleSubmit}>
+                <div className="qut-edit" onClick={() => setEdit(false)}>
+                  X
+                </div>
+
+                <input
+                  type="text"
+                  name="nameEn"
+                  value={formData.nameEn}
+                  onChange={(e) =>
+                    setFormData({ ...formData, nameEn: e.target.value })
+                  }
+                  required
+                  minLength={3}
+                  placeholder="Name (EN)"
+                />
+                <input
+                  type="text"
+                  name="nameRu"
+                  value={formData.nameRu}
+                  onChange={(e) =>
+                    setFormData({ ...formData, nameRu: e.target.value })
+                  }
+                  required
+                  minLength={3}
+                  placeholder="Name (RU)"
+                />
+                <input
+                  type="file"
+                  name="file"
+                  onChange={(e) =>
+                    setFormData({ ...formData, file: e.target.files[0] })
+                  }
+                />
+                <button type="submit">Update</button>
+              </form>
+            </div>
           </div>
 
-          <input
-            type="text"
-            name="nameEn"
-            value={formData.nameEn}
-            onChange={handleChange}
-            required
-            minLength={3}
-            placeholder="Name (EN)"
-          />
-          <input
-            type="text"
-            name="nameRu"
-            value={formData.nameRu}
-            onChange={handleChange}
-            required
-            minLength={3}
-            placeholder="Name (RU)"
-          />
-          <input
-            type="file"
-            name="file"
-            onChange={handleChange}
-            required
-          />
-          <button type="submit">Update</button>
-        </form>
-      </div>
-    </div>
           {/* Post Modal */}
           <div className={post ? "main-post activ" : "main-post"}>
             <div className="main-parent">
-              <form onSubmit={createCategory}>
+              <form>
                 <div className="qut-edit" onClick={() => setPost(false)}>
                   X
                 </div>
@@ -260,21 +219,14 @@ const Home = () => {
                   required
                   minLength={3}
                   placeholder="Name (EN)"
-                  onChange={(e) => setNameEn(e.target.value)}
                 />
                 <input
                   type="text"
                   required
                   minLength={3}
                   placeholder="Name (RU)"
-                  onChange={(e) => setNameRu(e.target.value)}
                 />
-                <input
-                  type="file"
-                  required
-                  onChange={(e) => setPicture(e.target.files[0])}
-                  accept="image/png, image/jpeg"
-                />
+                <input type="file" required />
                 <button type="submit">Post</button>
               </form>
             </div>
@@ -286,8 +238,8 @@ const Home = () => {
                 <p>Are you sure you want to delete this category?</p>
                 <button
                   onClick={() => {
-                    deleteCategory(categoryToDelete);
-                    setDelet(false); 
+                    // deleteCategory(categoryToDelete);
+                    setDelet(false);
                   }}
                 >
                   Yes, Delete
@@ -296,15 +248,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-          
-          <div className={search ? "main-search activ" : "main-search"}>
-             
-               <div className="main-search-parent">
-
-               </div>
-
-          </div>
-
         </main>
       </div>
     </div>
