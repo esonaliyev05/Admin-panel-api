@@ -7,7 +7,7 @@ const Home = () => {
 
   const [search, setSearch] = useState("");
   const [delet, setDelet] = useState(false);
-  const [edit, setEdit] = useState(false);
+  // const [edit, setEdit] = useState(false);
   const [post, setPost] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null); // To store category to be deleted
   
@@ -111,6 +111,30 @@ const Home = () => {
       });
   };
 
+
+  const [edit, setEdit] = useState(true);
+  const [formData, setFormData] = useState({
+    nameEn: "",
+    nameRu: "",
+    file: null,
+  });
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form Data:", formData);
+    // Bu yerda backendga jo'natish yoki validatsiya qilish mumkin
+    alert("Form successfully submitted!");
+  };
+
+
   return (
     <div className="home-container">
       <div className="admin-panel">
@@ -189,30 +213,40 @@ const Home = () => {
 
           {/* Edit Modal */}
           <div className={edit ? "main-push activ" : "main-push"}>
-            <div className="main-parent">
-              <form>
-                <div className="qut-edit" onClick={() => setEdit(false)}>
-                  X
-                </div>
-
-                <input
-                  type="text"
-                  required
-                  minLength={3}
-                  placeholder="Name (EN)"
-                />
-                <input
-                  type="text"
-                  required
-                  minLength={3}
-                  placeholder="Name (RU)"
-                />
-                <input type="file" required />
-                <button type="submit">Update</button>
-              </form>
-            </div>
+      <div className="main-parent">
+        <form onSubmit={handleSubmit}>
+          <div className="qut-edit" onClick={() => setEdit(false)}>
+            X
           </div>
 
+          <input
+            type="text"
+            name="nameEn"
+            value={formData.nameEn}
+            onChange={handleChange}
+            required
+            minLength={3}
+            placeholder="Name (EN)"
+          />
+          <input
+            type="text"
+            name="nameRu"
+            value={formData.nameRu}
+            onChange={handleChange}
+            required
+            minLength={3}
+            placeholder="Name (RU)"
+          />
+          <input
+            type="file"
+            name="file"
+            onChange={handleChange}
+            required
+          />
+          <button type="submit">Update</button>
+        </form>
+      </div>
+    </div>
           {/* Post Modal */}
           <div className={post ? "main-post activ" : "main-post"}>
             <div className="main-parent">
