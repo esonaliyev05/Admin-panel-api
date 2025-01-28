@@ -1,68 +1,192 @@
-/* Asosiy konteyner */
-.home-container {
+// styles.scss
+
+// Variables
+$primary-color: #2c3e50;
+$secondary-color: #34495e;
+$text-color: #ecf0f1;
+$bg-color: #ecf0f1;
+
+// Global Styles
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: $bg-color;
+  color: $primary-color;
+}
+
+.admin-panel {
+  display: flex;
+  height: 100vh;
+  
+
+  .sidebar {
+    width: 250px;
+    background-color: $primary-color;
+    color: $text-color;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: linear-gradient(135deg, #1e90ff, #ff69b4);
-    color: white;
-    font-size: 8rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    overflow: hidden;
+    flex-direction: column;
+
+    .sidebar-header {
+      font-size: 1.5rem;
+      text-align: center;
+      padding: 1rem;
+      background-color: $secondary-color;
+    }
+
+    .menu {
+      list-style: none;
+      padding: 0;
+
+      li {
+        padding: 1rem;
+        cursor: pointer;
+        &:hover {
+          background-color: $secondary-color;
+        }
+      }
+    }
   }
-  
-  /* Animatsiya bilan harflar */
-  .animated-name {
+
+  .main-content {
+    flex: 1;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background-color: $primary-color;
+      color: $text-color;
+
+      .search-bar {
+        input {
+          padding: 0.5rem;
+          border: none;
+          border-radius: 4px;
+        }
+      }
+
+      .user-profile {
+        cursor: pointer;
+      }
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      padding: 1rem;
+
+      .card {
+        background-color: $text-color;
+        color: $primary-color;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+    }
+
+    .data-table {
+      padding: 1rem;
+      // overflow-y: scroll;
+
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow-y: scroll;
+
+        th, td {
+          border: 1px solid $secondary-color;
+          padding: 0.75rem;
+          text-align: left;
+
+          img{
+            width: 50px;
+            height: 50px;
+            margin: 0 auto;
+          }
+
+        }
+
+        th {
+          background-color: $primary-color;
+          color: $text-color;
+        }
+
+        tr:nth-child(even) {
+          background-color: lighten($bg-color, 10%);
+        }
+      }
+
+      .data-count-get{
+        width: 100%;
+        height: 60vh;
+        overflow-y: scroll;
+
+      }
+
+    }
+
+    .main-push {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      left: 0;
+    
+
+
+      .main-parnet{
+        width: 450px;
+        height: 400px;
+        background: white;
+        position: relative;
+
+
+
+
+      }
+
+      &.activ{
+        display: flex;
+      }
+
+    }
+    .main-post {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      left: 0;
+    
+
+
+      .main-parnet{
+        width: 450px;
+        height: 400px;
+        background: white;
+        position: relative;
+
+
+
+
+      }
+
+      &.activ{
+        display: flex;
+      }
+
+    }
+
+
+
   }
-  
-  /* Harf uslubi */
-  .letter {
-    opacity: 0;
-    transform: translateY(350px);
-    animation: fadeInUp 1s ease-out forwards, colorChange 3s infinite, bounce 1s ease-in-out infinite;
-  }
-  
-  @keyframes fadeInUp {
-    0% {
-      opacity: 0;
-      transform: translateY(100px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  /* Rang o'zgarishi animatsiyasi */
-  @keyframes colorChange {
-    0% {
-      color: black;
-    }
-    25% {
-      color: black;
-    }
-    50% {
-      color: black;
-    }
-    75% {
-      color: black;
-    }
-    100% {
-      color: black;
-    }
-  }
-  
-  /* Harflarning tebranish animatsiyasi */
-  @keyframes bounce {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-50px);
-    }
-  }
-  
+}
