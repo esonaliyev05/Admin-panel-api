@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Home = () => {
+
   const [search, setSearch] = useState("");
   const [delet, setDelet] = useState(false);
   const [edit, setEdit] = useState(false);
   const [post, setPost] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null); // To store category to be deleted
-
+  
   const navigate = useNavigate();
 
   const logoutFunction = () => {
@@ -132,6 +133,7 @@ const Home = () => {
                 placeholder="Search..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                onClick={() => setSearch(true)}
               />
             </div>
             <div className="user-profile">Profile</div>
@@ -260,6 +262,15 @@ const Home = () => {
               </div>
             </div>
           </div>
+          
+          <div className={search ? "main-search activ" : "main-search"}>
+             
+               <div className="main-search-parent">
+
+               </div>
+
+          </div>
+
         </main>
       </div>
     </div>
