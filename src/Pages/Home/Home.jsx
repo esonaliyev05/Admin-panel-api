@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./Home.scss";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Home = () => {
-  const [serch, setSearch] = useState(false);
+  const [search, setSearch] = useState("");
   const [delet, setDelet] = useState(false);
   const [edit, setEdit] = useState(false);
   const [post, setPost] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null); // To store category to be deleted
 
   const navigate = useNavigate();
 
@@ -15,34 +17,49 @@ const Home = () => {
     navigate("/home");
   };
 
-  // get api
-
+  // Get API to fetch categories
   const [data, setData] = useState([]);
 
   function getCategory() {
     fetch("https://realauto.limsa.uz/api/categories")
       .then((res) => res.json())
-      .then((response) => setData(response?.data));
+      .then((response) => setData(response?.data))
+      .catch((error) => {
+        toast.error("Error fetching data");
+        console.error(error);
+      });
   }
+
   useEffect(() => {
     getCategory();
   }, []);
-  console.log(data);
 
-  //  post api
+  // Post API to create category
+  const [nameEn, setNameEn] = useState("");
+  const [nameRu, setNameRu] = useState("");
+  const [picture, setPicture] = useState(null);
+  const tokenbek = localStorage.getItem("token");
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [nameEn, setNameEn] = useState();
-  const [nameRu, setNameRu] = useState();
-  const [picture, setPicture] = useState();
-  const tokenbek = localStorage.getItem("tokenchik");
-  const formdata = new FormData();
-  formdata.append("name_en", nameEn);
-  formdata.append("name_ru", nameRu);
-  formdata.append("images", picture);
-
-  function creareCategoriy(e) {
+  const createCategory = (e) => {
     e.preventDefault();
+    console.log(tokenbek);
+    if (!tokenbek) {
+      toast.error("Token is missing!");
+      return;
+    }
+    
+
+    if (!nameEn || !nameRu || !picture) {
+      toast.error("Please fill all fields.");
+      return;
+    }
+
+    const formdata = new FormData();
+    formdata.append("name_en", nameEn);
+    formdata.append("name_ru", nameRu);
+    formdata.append("images", picture);
+
+    // POST request to create category
     fetch("https://realauto.limsa.uz/api/categories", {
       method: "POST",
       headers: {
@@ -51,8 +68,47 @@ const Home = () => {
       body: formdata,
     })
       .then((res) => res.json())
-      .then((elem) => console.log(elem));
-  }
+      .then((elem) => {
+        if (elem?.success) {
+          toast.success(elem?.message);
+          getCategory(); 
+        } else {
+          toast.error(elem?.message || "Unknown error");
+        }
+      })
+      .catch((err) => {
+        toast.error("Error creating category");
+        console.error(err);
+      });
+  };
+
+  // Delete API
+  const deleteCategory = (categoryId) => {
+    if (!tokenbek) {
+      toast.error("Token is missing!");
+      return;
+    }
+
+    fetch(`https://realauto.limsa.uz/api/categories/${categoryId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${tokenbek}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response?.success) {
+          toast.success(response?.message);
+          getCategory(); 
+        } else {
+          toast.error(response?.message || "Unknown error");
+        }
+      })
+      .catch((err) => {
+        toast.error("Error deleting category");
+        console.error(err);
+      });
+  };
 
   return (
     <div className="home-container">
@@ -64,7 +120,7 @@ const Home = () => {
             <li>Dashboard</li>
             <li>Users</li>
             <li>Settings</li>
-            <li>Logout</li>
+            <li onClick={logoutFunction}>Logout</li>
           </ul>
         </aside>
 
@@ -74,6 +130,8 @@ const Home = () => {
               <input
                 type="text"
                 placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
             </div>
             <div className="user-profile">Profile</div>
@@ -81,11 +139,9 @@ const Home = () => {
 
           <section className="dashboard">
             <div className="card">
-              Malumot qoshish <br /> <br />
+              Malumot qo'shish <br /> <br />
               <button onClick={() => setPost(true)}>PUSH</button>
             </div>
-            <div className="card">Card 2</div>
-            <div className="card">Card 3</div>
           </section>
 
           {/* Table */}
@@ -95,9 +151,9 @@ const Home = () => {
                 <tr>
                   <th>Name</th>
                   <th>Number</th>
-                  <th>img</th>
-                  <th>delet</th>
-                  <th>edit</th>
+                  <th>Img</th>
+                  <th>Delete</th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody className="data-count-get">
@@ -111,12 +167,17 @@ const Home = () => {
                         alt="alt"
                       />
                     </td>
-
                     <td>
-                      <button onClick={() => setDelet(true)}>delet</button>
+                      <button onClick={() => {
+                        setCategoryToDelete(item?.id); 
+                        setDelet(true);
+                        deleteCategory(categoryToDelete);
+                        setDelet(false); 
+                        
+                      }} >Delete</button>
                     </td>
                     <th>
-                      <button onClick={() => setEdit(true)}>edit</button>
+                      <button onClick={() => setEdit(true)}>Edit</button>
                     </th>
                   </tr>
                 ))}
@@ -124,6 +185,7 @@ const Home = () => {
             </table>
           </section>
 
+          {/* Edit Modal */}
           <div className={edit ? "main-push activ" : "main-push"}>
             <div className="main-parent">
               <form>
@@ -135,23 +197,24 @@ const Home = () => {
                   type="text"
                   required
                   minLength={3}
-                  placeholder="name en"
+                  placeholder="Name (EN)"
                 />
                 <input
                   type="text"
                   required
                   minLength={3}
-                  placeholder="name ru"
+                  placeholder="Name (RU)"
                 />
                 <input type="file" required />
-
-                <button>put</button>
+                <button type="submit">Update</button>
               </form>
             </div>
           </div>
+
+          {/* Post Modal */}
           <div className={post ? "main-post activ" : "main-post"}>
             <div className="main-parent">
-              <form onSubmit={creareCategoriy}>
+              <form onSubmit={createCategory}>
                 <div className="qut-edit" onClick={() => setPost(false)}>
                   X
                 </div>
@@ -160,26 +223,41 @@ const Home = () => {
                   type="text"
                   required
                   minLength={3}
-                  placeholder="name en"
-                  onChange={(e) => setNameEn(e?.target.value)}
+                  placeholder="Name (EN)"
+                  onChange={(e) => setNameEn(e.target.value)}
                 />
                 <input
                   type="text"
                   required
                   minLength={3}
-                  placeholder="name ru"
-                  onChange={(e) => setNameRu(e?.target.value)}
+                  placeholder="Name (RU)"
+                  onChange={(e) => setNameRu(e.target.value)}
                 />
                 <input
                   type="file"
                   required
-                  onChange={(e) => setPicture(e?.target.files[0])}
-                  accept="image/png , image/jpeg"
-                  readOnly
+                  onChange={(e) => setPicture(e.target.files[0])}
+                  accept="image/png, image/jpeg"
                 />
-
-                <button onClick={() => setModalOpen(true)}>post</button>
+                <button type="submit">Post</button>
               </form>
+            </div>
+          </div>
+
+          <div className={delet ? "delete-modal activ" : "delete-modal"}>
+            <div className="main-parent">
+              <div className="modal-content">
+                <p>Are you sure you want to delete this category?</p>
+                <button
+                  onClick={() => {
+                    deleteCategory(categoryToDelete);
+                    setDelet(false); 
+                  }}
+                >
+                  Yes, Delete
+                </button>
+                <button onClick={() => setDelet(false)}>Cancel</button>
+              </div>
             </div>
           </div>
         </main>
