@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Home = () => {
-  const [user , setUser] = useState(false)
+  const [user, setUser] = useState(false);
   const [search, setSearch] = useState("");
   const [delet, setDelet] = useState(false);
   const [post, setPost] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
-  const [categoryToEdit, setCategoryToEdit] = useState(null); 
+  const [categoryToEdit, setCategoryToEdit] = useState(null);
 
   const navigate = useNavigate();
 
@@ -336,11 +336,8 @@ const Home = () => {
           </div>
         </main>
       </div>
-        
-        <div className="home-user">
 
-        </div>
-
+      <div className="home-user"></div>
     </div>
   );
 };
