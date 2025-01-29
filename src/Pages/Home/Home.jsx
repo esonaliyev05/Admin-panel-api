@@ -70,9 +70,8 @@ const Home = () => {
       .then((elem) => {
         if (elem?.success) {
           toast.success(elem?.message);
-          getCategory();
-          // formdata({ nameEn: "", nameRu: "", file: null })
-          // ({ nameEn: "", nameRu: "", file: null })
+          e.target.reset()
+
 
         } else {
           toast.error(elem?.message || "Unknown error");
@@ -82,6 +81,7 @@ const Home = () => {
         toast.error("Error creating category");
         console.error(err);
       });
+
   };
 
   const deleteCategory = (categoryId) => {
@@ -154,6 +154,7 @@ const Home = () => {
         if (response?.success) {
           toast.success(response?.message);
           getCategory();
+
           setEdit(false);
         } else {
           toast.error(response?.message || "Unknown error");
@@ -189,7 +190,10 @@ const Home = () => {
           <div className="sidebar-header">Admin Panel</div>
           <ul className="menu">
             <li>Dashboard</li>
-            <li>Users</li>
+            <NavLink to={"/user"}>
+            <li style={{color: "white"}}>Users</li>
+
+            </NavLink>
             <li>Settings</li>
             <li onClick={logoutFunction}>Logout</li>
           </ul>
@@ -328,6 +332,7 @@ const Home = () => {
                   minLength={3}
                   placeholder="Name (EN)"
                   onChange={(e) => setNameEn(e.target.value)}
+                  
                 />
                 <input
                   type="text"
