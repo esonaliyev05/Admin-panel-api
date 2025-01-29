@@ -13,7 +13,6 @@ const Home = () => {
   const [categoryToEdit, setCategoryToEdit] = useState(null);
 
   const navigate = useNavigate();
-
   const logoutFunction = () => {
     localStorage.removeItem("tokenchik");
     navigate("/");
