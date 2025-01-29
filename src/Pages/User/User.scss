@@ -21,10 +21,11 @@
 
 
             img{
-                width: 350px;
-                height: 350px;
+                width: 250px;
+                height: 250px;
                 border-radius: 50%;
                 border: 1px solid black;
+                margin: 0 auto;
 
 
             }
@@ -34,6 +35,19 @@
                 width: 100%;
                 height: auto;
                 text-align: center;
+                margin: 20px 0;
+
+                h1{
+                    font-size: 79px;
+                }
+
+                .btn-grup{
+                    display: flex;
+                    gap: 15px;
+                    margin: 20px auto;
+                    justify-content: center;
+                }
+
                 
             }
 

@@ -70,6 +70,20 @@ body {
       .user-profile {
         cursor: pointer;
       }
+
+      .Top-link{
+        display: flex;
+        align-items: center;
+        gap: 20px ;
+
+        .icon{
+          font-size: 23px;
+
+
+        }
+
+      }
+
     }
 
     .dashboard {
