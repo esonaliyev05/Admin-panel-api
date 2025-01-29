@@ -129,7 +129,7 @@ const Home = () => {
       toast.error("Please fill all fields.");
       return;
     }
-
+    
     const formDataForEdit = new FormData();
     formDataForEdit.append("name_en", formData.nameEn);
     formDataForEdit.append("name_ru", formData.nameRu);
