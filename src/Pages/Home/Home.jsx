@@ -4,7 +4,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaRegCircleUser } from "react-icons/fa6";
 
-
 const Home = () => {
   const [user, setUser] = useState(false);
   const [search, setSearch] = useState("");
@@ -38,7 +37,7 @@ const Home = () => {
 
   const [nameEn, setNameEn] = useState("");
   const [nameRu, setNameRu] = useState("");
-  const [seachopen , seachOpen] = useState(false)
+  const [seachopen, seachOpen] = useState(false);
   const [picture, setPicture] = useState(null);
   const tokenbek = localStorage.getItem("token");
 
@@ -70,9 +69,7 @@ const Home = () => {
       .then((elem) => {
         if (elem?.success) {
           toast.success(elem?.message);
-          e.target.reset()
-
-
+          e.target.reset();
         } else {
           toast.error(elem?.message || "Unknown error");
         }
@@ -81,7 +78,6 @@ const Home = () => {
         toast.error("Error creating category");
         console.error(err);
       });
-
   };
 
   const deleteCategory = (categoryId) => {
@@ -110,7 +106,6 @@ const Home = () => {
         toast.error("Error deleting category");
         console.error(err);
       });
-      
   };
 
   const [edit, setEdit] = useState(false);
@@ -172,14 +167,13 @@ const Home = () => {
       .then((response) => response.json())
       .then((result) => setData(result))
       .catch((error) => console.error("Xatolik:", error));
-
   }, []);
 
   // // **Qidiruv bo‘yicha filter qilish**
-  const filteredData = data.filter((item) =>
-    item.name_en.toLowerCase().includes(search.toLowerCase()) ||
-    item.name_ru.toLowerCase().includes(search.toLowerCase())
-
+  const filteredData = data.filter(
+    (item) =>
+      item.name_en.toLowerCase().includes(search.toLowerCase()) ||
+      item.name_ru.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -191,8 +185,7 @@ const Home = () => {
           <ul className="menu">
             <li>Dashboard</li>
             <NavLink to={"/user"}>
-            <li style={{color: "white"}}>Users</li>
-
+              <li style={{ color: "white" }}>Users</li>
             </NavLink>
             <li>Settings</li>
             <li onClick={logoutFunction}>Logout</li>
@@ -202,19 +195,19 @@ const Home = () => {
         <main className="main-content">
           <header className="navbar">
             <div className="search-bar">
-          <input
-        type="text"
-        className="search-input"
-        placeholder="Search..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-
-
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
             <NavLink to={"/user"} className="Top-link">
-            <FaRegCircleUser style={{color: "white"}} className="icon"/>
-            <div className="user-profile" style={{color: "white"}}>Profile</div>
+              <FaRegCircleUser style={{ color: "white" }} className="icon" />
+              <div className="user-profile" style={{ color: "white" }}>
+                Profile
+              </div>
             </NavLink>
           </header>
 
@@ -332,7 +325,6 @@ const Home = () => {
                   minLength={3}
                   placeholder="Name (EN)"
                   onChange={(e) => setNameEn(e.target.value)}
-                  
                 />
                 <input
                   type="text"
@@ -347,7 +339,9 @@ const Home = () => {
                   onChange={(e) => setPicture(e.target.files[0])}
                   accept="image/png, image/jpeg"
                 />
-                <button type="submit" onClick={() => setPost(false)}>Post</button>
+                <button type="submit" onClick={() => setPost(false)}>
+                  Post
+                </button>
               </form>
             </div>
           </div>
@@ -369,53 +363,51 @@ const Home = () => {
           </div>
 
           <div className={seachopen ? "main-search activ" : "main-search"}>
-               
-          <div className="main-search-parent">
-      <tbody className="data-count-get">
-        {filteredData.map((item, index) => (
-          <tr key={index}>
-            <td>{item?.name_en}</td>
-            <td>{item?.name_ru}</td>
-            <td>
-              <img
-                src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
-                alt="alt"
-              />
-            </td>
-            <td>
-              <button
-                onClick={() => {
-                  setCategoryToDelete(item?.id);
-                  setDelet(true);
-                  deleteCategory(item?.id);
-                }}
-              >
-                Delete
-              </button>
-            </td>
-            <td>
-              <button
-                onClick={() => {
-                  setCategoryToEdit(item?.id);
-                  setFormData({
-                    nameEn: item?.name_en,
-                    nameRu: item?.name_ru,
-                    file: null,
-                  });
-                  setEdit(true);
-                }}
-              >
-                Edit
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </div>
-            </div>   
-
-           </main>
-         </div>
+            <div className="main-search-parent">
+              <tbody className="data-count-get">
+                {filteredData.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item?.name_en}</td>
+                    <td>{item?.name_ru}</td>
+                    <td>
+                      <img
+                        src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
+                        alt="alt"
+                      />
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => {
+                          setCategoryToDelete(item?.id);
+                          setDelet(true);
+                          deleteCategory(item?.id);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => {
+                          setCategoryToEdit(item?.id);
+                          setFormData({
+                            nameEn: item?.name_en,
+                            nameRu: item?.name_ru,
+                            file: null,
+                          });
+                          setEdit(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </div>
+          </div>
+        </main>
+      </div>
 
       <div className="home-user"></div>
     </div>
