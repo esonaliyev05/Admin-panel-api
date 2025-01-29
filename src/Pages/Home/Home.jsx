@@ -19,6 +19,9 @@ const Home = () => {
   };
 
   const [data, setData] = useState([]);
+   
+        console.log(data);
+
 
   function getCategory() {
     fetch("https://realauto.limsa.uz/api/categories")
@@ -216,7 +219,6 @@ const Home = () => {
               <button onClick={() => setPost(true)}>PUSH</button>
             </div>
           </section>
-
           {/* Table */}
           <section className="data-table">
             <table>
@@ -272,7 +274,6 @@ const Home = () => {
               </tbody>
             </table>
           </section>
-
           {/* Edit Modal */}
           <div className={edit ? "main-push activ" : "main-push"}>
             <div className="main-parent">
@@ -305,11 +306,10 @@ const Home = () => {
                   onChange={handleChange}
                   required
                 />
-                <button type="submit">Update</button>
+                <button type="submit" onClick={() => setEdit(false)}>Update</button>
               </form>
             </div>
           </div>
-
           {/* Post Modal */}
           <div className={post ? "main-post activ" : "main-post"}>
             <div className="main-parent">
