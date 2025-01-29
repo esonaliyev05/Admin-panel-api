@@ -96,7 +96,7 @@ const Home = () => {
         if (response?.success) {
           toast.success(response?.message);
           getCategory();
-          setDelet(false); // Modalni yopish
+          setDelet(false); 
         } else {
           toast.error(response?.message || "Unknown error");
         }
