@@ -17,7 +17,6 @@ body {
 .admin-panel {
   display: flex;
   height: auto;
-  
 
   .sidebar {
     width: 250px;
@@ -96,7 +95,6 @@ body {
         display: flex;
         align-items: center;
         gap: 35px;
-
       }
     }
 
@@ -104,48 +102,39 @@ body {
       padding: 1rem;
       // overflow-y: scroll;
 
-
       table {
         width: 100%;
         border-collapse: collapse;
         // overflow-y: scroll;
-        .data-count-get{
+        .data-count-get {
           width: 100%;
           height: 50vh;
           overflow-y: scroll;
-  
-          th, td {
+
+          th,
+          td {
             width: 200px;
             border: 1px solid $secondary-color;
             padding: 0.75rem;
             text-align: left;
-  
-            img{
+
+            img {
               width: 230px;
               height: 150px;
               margin: 0 auto;
             }
-  
           }
-  
+
           th {
             background-color: $primary-color;
             color: $text-color;
           }
-  
+
           tr:nth-child(even) {
             background-color: lighten($bg-color, 10%);
           }
-
         }
-
-
-
-
       }
-
-
-
     }
 
     .main-push {
@@ -156,24 +145,17 @@ body {
       justify-content: center;
       align-items: center;
       left: 0;
-    
 
-
-      .main-parnet{
+      .main-parnet {
         width: 450px;
         height: 400px;
         background: white;
         position: relative;
-
-
-
-
       }
 
-      &.activ{
+      &.activ {
         display: flex;
       }
-
     }
     .main-post {
       width: 100%;
@@ -183,26 +165,19 @@ body {
       justify-content: center;
       align-items: center;
       left: 0;
-    
 
-
-      .main-parnet{
+      .main-parnet {
         width: 450px;
         height: 400px;
         background: white;
         position: relative;
-
-
-
-
       }
 
-      &.activ{
+      &.activ {
         display: flex;
       }
-
     }
-    .delete-modal{
+    .delete-modal {
       width: 100%;
       height: 100%;
       position: fixed;
@@ -215,46 +190,35 @@ body {
       align-items: center;
       transform: scale(0);
 
-      .main-parnet{
+      .main-parnet {
         width: 450px;
         height: 400px;
         background: white;
         position: relative;
-
-
-
-
       }
-      
-      &.avtiv{
+
+      &.avtiv {
         display: flex;
         transform: scale(1);
       }
-
-
     }
-    .main-search{
-       width: 100%;
-       height: 100%;
-       position: fixed;
-       display: none;
-       
-       
-       .main-search-parent{
-         width: 100%;
-         height: 80%;
-         position: absolute;
-         background: white;
+    .main-search {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      display: none;
+
+      .main-search-parent {
+        width: 100%;
+        height: 80%;
+        position: absolute;
+        background: white;
         bottom: 0;
-       }
+      }
 
-       &.activ{
+      &.activ {
         display: flex;
-       }
-
+      }
     }
-
-
   }
 }
-

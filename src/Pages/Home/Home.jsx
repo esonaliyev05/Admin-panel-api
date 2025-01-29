@@ -4,18 +4,18 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Home = () => {
-
+  const [user , setUser] = useState(false)
   const [search, setSearch] = useState("");
   const [delet, setDelet] = useState(false);
   const [post, setPost] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState(null); 
-  const [categoryToEdit, setCategoryToEdit] = useState(null); // To store the category to edit
-  
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [categoryToEdit, setCategoryToEdit] = useState(null); 
+
   const navigate = useNavigate();
 
   const logoutFunction = () => {
     localStorage.removeItem("tokenchik");
-    navigate("/home");
+    navigate("/");
   };
 
   const [data, setData] = useState([]);
@@ -67,7 +67,7 @@ const Home = () => {
       .then((elem) => {
         if (elem?.success) {
           toast.success(elem?.message);
-          getCategory(); 
+          getCategory();
         } else {
           toast.error(elem?.message || "Unknown error");
         }
@@ -83,7 +83,7 @@ const Home = () => {
       toast.error("Token is missing!");
       return;
     }
-  
+
     fetch(`https://realauto.limsa.uz/api/categories/${categoryId}`, {
       method: "DELETE",
       headers: {
@@ -94,7 +94,7 @@ const Home = () => {
       .then((response) => {
         if (response?.success) {
           toast.success(response?.message);
-          getCategory(); 
+          getCategory();
           setDelet(false); // Modalni yopish
         } else {
           toast.error(response?.message || "Unknown error");
@@ -105,7 +105,6 @@ const Home = () => {
         console.error(err);
       });
   };
-  
 
   const [edit, setEdit] = useState(false);
   const [formData, setFormData] = useState({
@@ -219,12 +218,12 @@ const Home = () => {
                     </td>
                     <td>
                       <button
-                    onClick={() => {
-                      setCategoryToDelete(item?.id); 
-                      setDelet(true);
-                      deleteCategory(categoryToDelete);
-                      setDelet(false); 
-                    }}
+                        onClick={() => {
+                          setCategoryToDelete(item?.id);
+                          setDelet(true);
+                          deleteCategory(categoryToDelete);
+                          setDelet(false);
+                        }}
                       >
                         Delete
                       </button>
@@ -321,23 +320,27 @@ const Home = () => {
           </div>
 
           <div className={delet ? "delete-modal activ" : "delete-modal"}>
-  <div className="main-parent">
-    <div className="modal-content">
-      <p>Are you sure you want to delete this category?</p>
-      <button
-        onClick={() => {
-          deleteCategory(categoryToDelete); // Delete operatsiyasini chaqirish
-        }}
-      >
-        Yes, Delete
-      </button>
-      <button onClick={() => setDelet(false)}>Cancel</button>
-    </div>
-  </div>
-</div>
-          
+            <div className="main-parent">
+              <div className="modal-content">
+                <p>Are you sure you want to delete this category?</p>
+                <button
+                  onClick={() => {
+                    deleteCategory(categoryToDelete); // Delete operatsiyasini chaqirish
+                  }}
+                >
+                  Yes, Delete
+                </button>
+                <button onClick={() => setDelet(false)}>Cancel</button>
+              </div>
+            </div>
+          </div>
         </main>
       </div>
+        
+        <div className="home-user">
+
+        </div>
+
     </div>
   );
 };
