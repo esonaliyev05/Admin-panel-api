@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Home.scss";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Home = () => {
@@ -183,7 +183,10 @@ const Home = () => {
                 onClick={() => setSearch(true)}
               />
             </div>
-            <div className="user-profile">Profile</div>
+            <NavLink to={"/user"}>
+
+            <div className="user-profile" style={{color: "white"}}>Profile</div>
+            </NavLink>
           </header>
 
           <section className="dashboard">

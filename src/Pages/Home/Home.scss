@@ -16,7 +16,7 @@ body {
 
 .admin-panel {
   display: flex;
-  height: auto;
+  min-height: 100vh;
 
   .sidebar {
     width: 250px;

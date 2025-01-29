@@ -5,6 +5,7 @@ import Home from './Pages/Home/Home';
 import { ToastContainer } from 'react-toastify';
 import { Navigate } from 'react-router-dom'; 
 import { useEffect, useState } from 'react';
+import User from './Pages/User/User';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -24,6 +25,7 @@ function App() {
           path="/home"
           element={isAuthenticated ? <Home /> : <Navigate to="/" />}
         />
+        <Route path='/user' element={isAuthenticated ? <User/> : <Navigate to={"/"}/>}/>
       </Routes>
       <ToastContainer />
     </>

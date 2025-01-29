@@ -1,0 +1,44 @@
+.User-name{
+    width: 100%;
+    height: auto;
+
+    .User-container{
+        width: 1200px;
+        height: 100vh;
+        margin: 0 auto;
+        display: flex;
+        // justify-content: center;
+        align-items: center;
+        border: 1px solid black;
+
+        .Logo{
+            width: 450px;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin: 0 auto;
+
+
+            img{
+                width: 350px;
+                height: 350px;
+                border-radius: 50%;
+                border: 1px solid black;
+
+
+            }
+
+
+            .logo-text{
+                width: 100%;
+                height: auto;
+                text-align: center;
+                
+            }
+
+        }
+
+    }
+
+}
