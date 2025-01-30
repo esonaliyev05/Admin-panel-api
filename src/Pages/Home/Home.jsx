@@ -19,9 +19,7 @@ const Home = () => {
   };
 
   const [data, setData] = useState([]);
-   
-        console.log(data);
-
+  console.log(data);
 
   function getCategory() {
     fetch("https://realauto.limsa.uz/api/categories")
@@ -70,7 +68,7 @@ const Home = () => {
       .then((res) => res.json())
       .then((elem) => {
         if (elem?.success) {
-          toast.success(elem?.message);
+          toast.ok(elem?.message);
           e.target.reset();
         } else {
           toast.error(elem?.message || "Unknown error");
@@ -99,7 +97,7 @@ const Home = () => {
         if (response?.success) {
           toast.success(response?.message);
           getCategory();
-          setDelet(false); 
+          setDelet(false);
         } else {
           toast.error(response?.message || "Unknown error");
         }
@@ -132,7 +130,7 @@ const Home = () => {
       toast.error("Please fill all fields.");
       return;
     }
-    
+
     const formDataForEdit = new FormData();
     formDataForEdit.append("name_en", formData.nameEn);
     formDataForEdit.append("name_ru", formData.nameRu);
@@ -306,7 +304,9 @@ const Home = () => {
                   onChange={handleChange}
                   required
                 />
-                <button type="submit" onClick={() => setEdit(false)}>Update</button>
+                <button type="submit" onClick={() => setEdit(false)}>
+                  Update
+                </button>
               </form>
             </div>
           </div>
