@@ -3,6 +3,9 @@ import "./Home.scss";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaRegCircleUser } from "react-icons/fa6";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { FaEdit } from "react-icons/fa";
+import { IoPushOutline } from "react-icons/io5";
 
 const Home = () => {
   const [user, setUser] = useState(false);
@@ -196,7 +199,7 @@ const Home = () => {
           <header className="navbar">
             <div className="search-bar">
               <input
-                type="text"
+                type="search"
                 className="search-input"
                 placeholder="Search..."
                 value={search}
@@ -217,7 +220,7 @@ const Home = () => {
                       </div>
                     ))
                   ) : (
-                    <p className="no-results">No results found</p>
+                    <p className="no-results">No results found 😒</p>
                   )}
                 </div>
               )}
@@ -234,7 +237,7 @@ const Home = () => {
           <section className="dashboard">
             <div className="card">
               Malumot qo'shish <br /> <br />
-              <button onClick={() => setPost(true)}>PUSH</button>
+              <button onClick={() => setPost(true)}> <IoPushOutline/> PUSH</button>
             </div>
           </section>
           {/* Table */}
@@ -266,8 +269,9 @@ const Home = () => {
                           setCategoryToDelete(item?.id); // Modal uchun ID saqlash
                           setDelet(true);
                         }}
+                        className="btn-del"
                       >
-                        Delete
+                        <RiDeleteBin6Line />
                       </button>
                     </td>
                     <th>
@@ -282,7 +286,7 @@ const Home = () => {
                           setEdit(true);
                         }}
                       >
-                        Edit
+                       <FaEdit/>  Edit
                       </button>
                     </th>
                   </tr>
@@ -382,7 +386,7 @@ const Home = () => {
           <div className={delet ? "delete-modal activ" : "delete-modal"}>
             <div className="main-parent">
               <div className="modal-content">
-                <p>Are you sure you want to delete this category?</p>
+                <p>Siz Rosstan ham o'chrishni Xoxlaysizmi?</p>
                 <button
                   onClick={() => {
                     deleteCategory(categoryToDelete); // O'chirish funksiyasini chaqirish
