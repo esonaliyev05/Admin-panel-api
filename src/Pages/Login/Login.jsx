@@ -6,7 +6,7 @@ import "./Login.scss";
 const Login = () => {
   const [phone, setPhone] = useState("");
   const [parol, setParol] = useState("");
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const loginSubmit = (e) => {
     e.preventDefault();
@@ -19,16 +19,13 @@ const Login = () => {
       body: JSON.stringify({
         phone_number: phone,
         password: parol,
-        
       }),
     })
       .then((res) => res.json())
       .then((element) => {
         if (element?.success) {
           toast.success("Siz royhatdan otingiz");
-        
-          
- 
+
           localStorage.setItem(
             "token",
             element?.data?.tokens?.accessToken?.token
@@ -45,9 +42,9 @@ const Login = () => {
   return (
     <>
       <div className="form-container">
-      <meta name="description" content="Biz haqimizda ma'lumot oling" />
-      <meta name="Login" content="Login xaqida malumot oling"/>
-      
+        <meta name="description" content="Biz haqimizda ma'lumot oling" />
+        <meta name="Login" content="Login xaqida malumot oling" />
+
         <div className="form-text">
           <h1>Login</h1>
 
@@ -67,7 +64,6 @@ const Login = () => {
             placeholder="Name"
             required
             minLength={3}
-            
           />
           <input
             onChange={(e) => setPhone(e.target.value)}
