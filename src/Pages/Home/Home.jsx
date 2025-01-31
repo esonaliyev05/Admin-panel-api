@@ -179,6 +179,7 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="admin-panel">
+        ``
         {/* Sidebar */}
         <aside className="sidebar">
           <div className="sidebar-header">Admin Panel</div>
@@ -191,7 +192,6 @@ const Home = () => {
             <li onClick={logoutFunction}>Logout</li>
           </ul>
         </aside>
-
         <main className="main-content">
           <header className="navbar">
             <div className="search-bar">
@@ -202,7 +202,27 @@ const Home = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
+
+              {search.length > 0 && (
+                <div className="search-dropdown">
+                  {filteredData.length > 0 ? (
+                    filteredData.map((item, index) => (
+                      <div key={index} className="search-item">
+                        <span>
+                          {item?.name_en} 
+                        </span>
+                        <span> ({item?.name_ru})</span>
+                        <img src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
+                         alt="" />
+                      </div>
+                    ))
+                  ) : (
+                    <p className="no-results">No results found</p>
+                  )}
+                </div>
+              )}
             </div>
+
             <NavLink to={"/user"} className="Top-link">
               <FaRegCircleUser style={{ color: "white" }} className="icon" />
               <div className="user-profile" style={{ color: "white" }}>
@@ -243,10 +263,8 @@ const Home = () => {
                     <td>
                       <button
                         onClick={() => {
-                          setCategoryToDelete(item?.id);
+                          setCategoryToDelete(item?.id); // Modal uchun ID saqlash
                           setDelet(true);
-                          deleteCategory(categoryToDelete);
-                          setDelet(false);
                         }}
                       >
                         Delete
@@ -345,7 +363,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className={delet ? "delete-modal activ" : "delete-modal"}>
+          {/* <div className={delet ? "delete-modal activ" : "delete-modal"}>
             <div className="main-parent">
               <div className="modal-content">
                 <p>Are you sure you want to delete this category?</p>
@@ -359,50 +377,22 @@ const Home = () => {
                 <button onClick={() => setDelet(false)}>Cancel</button>
               </div>
             </div>
-          </div>
+          </div> */}
 
-          <div className={seachopen ? "main-search activ" : "main-search"}>
-            <div className="main-search-parent">
-              <tbody className="data-count-get">
-                {filteredData.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item?.name_en}</td>
-                    <td>{item?.name_ru}</td>
-                    <td>
-                      <img
-                        src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
-                        alt="alt"
-                      />
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => {
-                          setCategoryToDelete(item?.id);
-                          setDelet(true);
-                          deleteCategory(item?.id);
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => {
-                          setCategoryToEdit(item?.id);
-                          setFormData({
-                            nameEn: item?.name_en,
-                            nameRu: item?.name_ru,
-                            file: null,
-                          });
-                          setEdit(true);
-                        }}
-                      >
-                        Edit
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+          <div className={delet ? "delete-modal activ" : "delete-modal"}>
+            <div className="main-parent">
+              <div className="modal-content">
+                <p>Are you sure you want to delete this category?</p>
+                <button
+                  onClick={() => {
+                    deleteCategory(categoryToDelete); // O'chirish funksiyasini chaqirish
+                    setDelet(false); // Modalni yopish
+                  }}
+                >
+                  Yes, Delete
+                </button>
+                <button onClick={() => setDelet(false)}>Cancel</button>
+              </div>
             </div>
           </div>
         </main>

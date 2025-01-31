@@ -60,12 +60,72 @@ body {
       color: $text-color;
 
       .search-bar {
-        input {
-          padding: 0.5rem;
-          border: none;
-          border-radius: 4px;
+        position: relative;
+        display: flex;
+        // flex-direction: column;
+
+
+        .search-input {
+          width: 350px;
+          padding: 8px;
+          font-size: 16px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
         }
+        
+        .search-dropdown {
+          position: absolute;
+          top: 40px;
+          left: 0;
+          width: 1000px;
+          background: white;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+          min-height: 500px;
+          overflow-y: auto;
+          z-index: 10;
+
+        }
+        
+        .search-item {
+          padding: 10px;
+          font-size: 16px;
+          border-bottom: 1px solid #eee;
+          cursor: pointer;
+          display: flex;
+          width: 100%;
+          justify-content: space-around;
+          align-items: center;
+
+          span{
+            color: black;
+            font-weight: 800;
+            font-size: 25px;
+
+
+          }
+
+          img{
+            width: 150px;
+          }
+        
+          &:hover {
+            background: #f0f0f0;
+          }
+        }
+        
+        .no-results {
+          padding: 10px;
+          color: black;
+          font-size: 18px;
+          text-align: center;
+        }
+
       }
+      
+ 
+      
 
       .user-profile {
         cursor: pointer;
@@ -148,14 +208,23 @@ body {
     }
 
     .main-push {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      position: fixed;
-      display: none;
-      justify-content: center;
+      background: rgba(0, 0, 0, 0.5); // Qoraygan fon
+      display: flex;
       align-items: center;
-      left: 0;
-
+      justify-content: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    
+      &.activ {
+        visibility: visible;
+        opacity: 1;
+      }
       .main-parnet {
         width: 450px;
         height: 400px;
@@ -163,18 +232,26 @@ body {
         position: relative;
       }
 
-      &.activ {
-        display: flex;
-      }
+  
     }
     .main-post {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      position: fixed;
-      display: none;
-      justify-content: center;
+      background: rgba(0, 0, 0, 0.5); // Qoraygan fon
+      display: flex;
       align-items: center;
-      left: 0;
+      justify-content: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    
+      &.activ {
+        visibility: visible;
+        opacity: 1;
+      }
 
       .main-parnet {
         width: 450px;
@@ -183,52 +260,159 @@ body {
         position: relative;
       }
 
-      &.activ {
-        display: flex;
-      }
+      // &.activ {
+      //   display: flex;
+      // }
     }
     .delete-modal {
-      width: 100%;
-      height: 100%;
       position: fixed;
-      display: none;
-      justify-content: center;
-      align-items: center;
+      top: 0;
       left: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transform: scale(0);
-
-      .main-parnet {
-        width: 450px;
-        height: 400px;
-        background: white;
-        position: relative;
-      }
-
-      &.avtiv {
-        display: flex;
-        transform: scale(1);
-      }
-    }
-    .main-search {
       width: 100%;
       height: 100%;
-      position: fixed;
-      display: none;
-
-      .main-search-parent {
-        width: 100%;
-        height: 80%;
-        position: absolute;
-        background: white;
-        bottom: 0;
-      }
-
+      background: rgba(0, 0, 0, 0.5); // Qoraygan fon
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    
       &.activ {
-        display: flex;
+        visibility: visible;
+        opacity: 1;
+      }
+    
+      .main-parent {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        min-width: 300px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      }
+    
+      .modal-content {
+        p {
+          font-size: 18px;
+          margin-bottom: 15px;
+        }
+    
+        button {
+          padding: 10px 15px;
+          border: none;
+          border-radius: 5px;
+          font-size: 16px;
+          cursor: pointer;
+          transition: 0.2s;
+          margin: 5px;
+    
+          &:first-child {
+            background: #d9534f;
+            color: white;
+    
+            &:hover {
+              background: #c9302c;
+            }
+          }
+    
+          &:last-child {
+            background: #f0f0f0;
+            color: #333;
+    
+            &:hover {
+              background: #ddd;
+            }
+          }
+        }
       }
     }
+    
+    .search-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    
+      &.activ {
+        visibility: visible;
+        opacity: 11;
+      }
+    
+      .search-parent {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 400px;
+        max-width: 90%;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+      }
+    
+      .search-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    
+        h3 {
+          margin: 0;
+          font-size: 20px;
+        }
+    
+        .close-btn {
+          background: red;
+          color: white;
+          border: none;
+          padding: 5px 10px;
+          cursor: pointer;
+          border-radius: 5px;
+          font-size: 16px;
+    
+          &:hover {
+            background: darkred;
+          }
+        }
+      }
+    
+      .search-input {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+    
+      .search-results {
+        max-height: 200px;
+        overflow-y: auto;
+      }
+    
+      .search-item {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        font-size: 16px;
+        cursor: pointer;
+    
+        &:hover {
+          background: #f0f0f0;
+        }
+      }
+    
+      .no-results {
+        color: gray;
+        font-size: 16px;
+      }
+    }
+
   }
 }
