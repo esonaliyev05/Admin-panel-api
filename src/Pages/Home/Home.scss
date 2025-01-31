@@ -64,7 +64,6 @@ body {
         display: flex;
         // flex-direction: column;
 
-
         .search-input {
           width: 350px;
           padding: 8px;
@@ -72,7 +71,7 @@ body {
           border: 1px solid #ccc;
           border-radius: 5px;
         }
-        
+
         .search-dropdown {
           position: absolute;
           top: 40px;
@@ -86,9 +85,8 @@ body {
           overflow-y: scroll;
           overflow-y: auto;
           z-index: 10;
-
         }
-        
+
         .search-item {
           padding: 10px;
           font-size: 16px;
@@ -99,23 +97,21 @@ body {
           justify-content: space-around;
           align-items: center;
 
-          span{
+          span {
             color: black;
             font-weight: 800;
             font-size: 25px;
-
-
           }
 
-          img{
+          img {
             width: 150px;
           }
-        
+
           &:hover {
             background: #f0f0f0;
           }
         }
-        
+
         .no-results {
           padding: 10px;
           color: red;
@@ -128,11 +124,7 @@ body {
           align-items: center;
           justify-content: center;
         }
-
       }
-      
- 
-      
 
       .user-profile {
         cursor: pointer;
@@ -203,12 +195,10 @@ body {
               margin: 0 auto;
             }
 
-            button{
+            button {
               display: flex;
               align-items: center;
-
             }
-
           }
 
           th {
@@ -216,13 +206,12 @@ body {
             color: $text-color;
           }
 
-          .btn-del{
+          .btn-del {
             background: none;
             display: flex;
             margin: 0 auto;
             font-size: 30px;
             color: red;
-
           }
 
           tr:nth-child(even) {
@@ -245,7 +234,7 @@ body {
       visibility: hidden;
       opacity: 0;
       transition: opacity 0.3s ease, visibility 0.3s ease;
-    
+
       &.activ {
         visibility: visible;
         opacity: 1;
@@ -256,8 +245,6 @@ body {
         background: white;
         position: relative;
       }
-
-  
     }
     .main-post {
       position: fixed;
@@ -272,7 +259,7 @@ body {
       visibility: hidden;
       opacity: 0;
       transition: opacity 0.3s ease, visibility 0.3s ease;
-    
+
       &.activ {
         visibility: visible;
         opacity: 1;
@@ -302,12 +289,12 @@ body {
       visibility: hidden;
       opacity: 0;
       transition: opacity 0.3s ease, visibility 0.3s ease;
-    
+
       &.activ {
         visibility: visible;
         opacity: 1;
       }
-    
+
       .main-parent {
         background: white;
         padding: 20px;
@@ -316,13 +303,13 @@ body {
         min-width: 300px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
       }
-    
+
       .modal-content {
         p {
           font-size: 18px;
           margin-bottom: 15px;
         }
-    
+
         button {
           padding: 10px 15px;
           border: none;
@@ -331,20 +318,20 @@ body {
           cursor: pointer;
           transition: 0.2s;
           margin: 5px;
-    
+
           &:first-child {
             background: #d9534f;
             color: white;
-    
+
             &:hover {
               background: #c9302c;
             }
           }
-    
+
           &:last-child {
             background: #f0f0f0;
             color: #333;
-    
+
             &:hover {
               background: #ddd;
             }
@@ -352,7 +339,7 @@ body {
         }
       }
     }
-    
+
     .search-modal {
       position: fixed;
       top: 0;
@@ -366,12 +353,12 @@ body {
       visibility: hidden;
       opacity: 0;
       transition: opacity 0.3s ease, visibility 0.3s ease;
-    
+
       &.activ {
         visibility: visible;
         opacity: 11;
       }
-    
+
       .search-parent {
         background: white;
         padding: 20px;
@@ -381,18 +368,18 @@ body {
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         text-align: center;
       }
-    
+
       .search-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 15px;
-    
+
         h3 {
           margin: 0;
           font-size: 20px;
         }
-    
+
         .close-btn {
           background: red;
           color: white;
@@ -401,13 +388,13 @@ body {
           cursor: pointer;
           border-radius: 5px;
           font-size: 16px;
-    
+
           &:hover {
             background: darkred;
           }
         }
       }
-    
+
       .search-input {
         width: 100%;
         padding: 10px;
@@ -416,28 +403,27 @@ body {
         border-radius: 5px;
         margin-bottom: 10px;
       }
-    
+
       .search-results {
         max-height: 200px;
         overflow-y: auto;
       }
-    
+
       .search-item {
         padding: 10px;
         border-bottom: 1px solid #eee;
         font-size: 16px;
         cursor: pointer;
-    
+
         &:hover {
           background: #f0f0f0;
         }
       }
-    
+
       .no-results {
         color: gray;
         font-size: 16px;
       }
     }
-
   }
 }
