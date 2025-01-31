@@ -42,6 +42,9 @@ const Login = () => {
   return (
     <>
       <div className="form-container">
+      <meta name="description" content="Biz haqimizda ma'lumot oling" />
+      <meta name="Login" content="Login xaqida malumot oling"/>
+      
         <div className="form-text">
           <h1>Login</h1>
 

@@ -68,7 +68,7 @@ const Home = () => {
       .then((res) => res.json())
       .then((elem) => {
         if (elem?.success) {
-          toast.ok(elem?.message);
+          toast.success(elem?.message);
           e.target.reset();
         } else {
           toast.error(elem?.message || "Unknown error");
