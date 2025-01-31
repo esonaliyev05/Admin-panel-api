@@ -182,7 +182,7 @@ body {
       table {
         width: 100%;
         border-collapse: collapse;
-        // overflow-y: scroll;
+        overflow-y: scroll;
         .data-count-get {
           width: 100%;
           height: 50vh;
@@ -206,7 +206,7 @@ body {
             button{
               display: flex;
               align-items: center;
-              
+
             }
 
           }
