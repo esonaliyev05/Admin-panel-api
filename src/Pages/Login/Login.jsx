@@ -19,13 +19,16 @@ const Login = () => {
       body: JSON.stringify({
         phone_number: phone,
         password: parol,
+        
       }),
     })
       .then((res) => res.json())
       .then((element) => {
         if (element?.success) {
           toast.success("Siz royhatdan otingiz");
-
+        
+          
+ 
           localStorage.setItem(
             "token",
             element?.data?.tokens?.accessToken?.token
@@ -59,11 +62,12 @@ const Login = () => {
         <form onSubmit={loginSubmit}>
           <input
             onChange={(e) => setParol(e.target.value)}
-            value={parol}
+            value={parol.toLocaleLowerCase()}
             type="text"
             placeholder="Name"
             required
             minLength={3}
+            
           />
           <input
             onChange={(e) => setPhone(e.target.value)}
