@@ -233,7 +233,7 @@ const Home = () => {
               )}
             </div>
 
-            <NavLink to={"/user"} className="Top-link">
+            <NavLink to={"#"} className="Top-link">
               <FaRegCircleUser style={{ color: "white" }} className="icon" />
               <div className="user-profile" style={{ color: "white" }}>
                 Profile
