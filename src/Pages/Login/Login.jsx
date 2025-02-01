@@ -58,23 +58,24 @@ const Login = () => {
 
         <form onSubmit={loginSubmit}>
           <input
-            onChange={(e) => setParol(e.target.value)}
-            value={parol.toLocaleLowerCase()}
-            type="text"
+            onChange={(e) => setPhone(e.target.value)}
+            value={phone}
+            type="number"
             placeholder="Name"
             required
             minLength={3}
           />
           <input
-            onChange={(e) => setPhone(e.target.value)}
-            value={phone}
-            type="password"
+            onChange={(e) => setParol(e.target.value)}
+            value={parol.toLocaleLowerCase()}
+            type="Password"
             placeholder="password"
             required
             minLength={3}
           />
           <button type="submit">Submit</button>
         </form>
+        
       </div>
     </>
   );

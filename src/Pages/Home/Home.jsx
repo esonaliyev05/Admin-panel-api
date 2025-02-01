@@ -6,6 +6,11 @@ import { FaRegCircleUser } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaEdit } from "react-icons/fa";
 import { IoPushOutline } from "react-icons/io5";
+import Cards from "../Cards/Cards";
+import Brands from "../Brends/Brands";
+import Cities from "../Cities/Cities";
+import Locations from "../Locations/Locations";
+import Models from "../Models/Models";
 
 const Home = () => {
   const [user, setUser] = useState(false);
@@ -14,6 +19,7 @@ const Home = () => {
   const [post, setPost] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [categoryToEdit, setCategoryToEdit] = useState(null);
+  const [activeComponent, setActiveComponent] = useState("A")
 
   const navigate = useNavigate();
   const logoutFunction = () => {
@@ -187,11 +193,12 @@ const Home = () => {
         <aside className="sidebar">
           <div className="sidebar-header">Admin Panel</div>
           <ul className="menu">
-            <li>Dashboard</li>
-            <NavLink to={"/user"}>
-              <li style={{ color: "white" }}>Users</li>
-            </NavLink>
-            <li>Settings</li>
+            <li onClick={() => setActiveComponent("A")}  >Categories</li>
+              <li onClick={() => setActiveComponent("B")} >Brands</li>
+            <li onClick={() => setActiveComponent("C")}>Cities</li>
+            <li onClick={() => setActiveComponent("D")}>Locations</li>
+            <li onClick={() => setActiveComponent("E")}>Cars</li>
+            <li onClick={() => setActiveComponent("F")}>Models</li>
             <li onClick={logoutFunction}>Logout</li>
           </ul>
         </aside>
@@ -241,7 +248,8 @@ const Home = () => {
             </div>
           </section>
           {/* Table */}
-          <section className="data-table">
+
+          {activeComponent === "A" &&   <section className="data-table">
             <table>
               <thead>
                 <tr>
@@ -294,6 +302,25 @@ const Home = () => {
               </tbody>
             </table>
           </section>
+          }
+          {
+            activeComponent === "B" && <Brands/>
+          }
+          {
+            activeComponent === "C" && <Cities/>
+          }
+          {
+            activeComponent === "D" && <Locations/>
+          }
+          {
+            activeComponent === "E" && <Cards/>
+          }
+          {
+            activeComponent === "F" && <Models/>
+          }
+
+        
+
           {/* Edit Modal */}
           <div className={edit ? "main-push activ" : "main-push"}>
             <div className="main-parent">
