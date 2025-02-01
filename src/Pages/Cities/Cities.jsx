@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Cities.scss";
 import { toast } from "react-toastify";
+import { ClockLoader } from "react-spinners";
+import { IoPushOutline } from "react-icons/io5";
 
 const Cities = () => {
   const [data, setData] = useState([]);
@@ -30,9 +32,19 @@ const Cities = () => {
   return (
     <div className="Cities">
       <div className="container">
+      <section className="dashboard">
+               <div className="card">
+                 Malumot qo'shish <br /> <br />
+                 <button onClick={() => setPost(true)}>
+                   {" "}
+                   <IoPushOutline /> PUSH
+                 </button>
+               </div>
+             </section>
         <div className="data-table">
           {loading ? (
-          <h2>Yuklanmoqda...</h2> // Loder componenti
+            <h2><ClockLoader/> </h2>
+            // Loder componenti
           ) : (
             <table>
               <thead>

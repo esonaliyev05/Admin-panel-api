@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./Brands.scss";
+import { ClockLoader } from "react-spinners";
 import { toast } from "react-toastify";
+import { IoPushOutline } from "react-icons/io5";
 
 const Brands = () => {
   const [data, setData] = useState([]);
-  const [delet, setDelet] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const tokenbek = localStorage.getItem("token");
+  const [pushopen, setPushopen] = useState(false);
+  const [editopen, setEditopen] = useState(false);
+  const [deletopen, setDeletopen] = useState(false);
 
   function getCategory() {
     setIsLoading(true);
@@ -44,36 +47,45 @@ const Brands = () => {
         if (response?.success) {
           toast.success(response?.message);
           getCategory();
-          setDelet(false);
         } else {
           toast.error(response.message || "Unknown error");
-          
         }
       })
       .catch((err) => {
-        toast.error("Eror deleting category");
+        toast.error("Error deleting category");
         console.log(err);
       });
   };
 
   return (
     <div className="Brands">
+      <section className="dashboard">
+        <div className="card">
+          Malumot qo'shish <br /> <br />
+          <button onClick={() => setPost(true)}>
+            {" "}
+            <IoPushOutline /> PUSH
+          </button>
+        </div>
+      </section>
       <div className="data-table">
         {isLoading ? (
-          <h2>Yuklanmoqda...</h2>
+          <h2>
+            <ClockLoader />
+          </h2>
         ) : (
           <table>
             <thead>
               <tr>
                 <th>Brend-Name</th>
                 <th>Brand-logo</th>
-                <th>Edit</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody className="data-count-get">
               {data.length > 0 ? (
-                data.map((item, index) => (
-                  <tr key={index}>
+                data.map((item) => (
+                  <tr key={item.id}>
                     <td>{item?.title}</td>
                     <td>
                       <img
@@ -82,24 +94,18 @@ const Brands = () => {
                       />
                     </td>
                     <td>
-                      <span>No image available</span>
+                      <button onClick={() => deleteCategory(item.id)}>
+                        Delete
+                      </button>
                     </td>
                     <td>
-                      <button
-                        onClick={() => {
-                          deleteCategory(categoryToDelete); // O'chirish funksiyasini chaqirish
-                          // setDelet(false); // Modalni yopish
-                        }}
-                      >
-                        d
-                      </button>
-                      <button>e</button>
+                      <button>Edit</button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5">Hech qanday ma'lumot topilmadi</td>
+                  <td colSpan="3">Hech qanday ma'lumot topilmadi</td>
                 </tr>
               )}
             </tbody>

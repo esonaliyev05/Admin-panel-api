@@ -19,7 +19,7 @@ const Home = () => {
   const [post, setPost] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [categoryToEdit, setCategoryToEdit] = useState(null);
-  const [activeComponent, setActiveComponent] = useState("A")
+  const [activeComponent, setActiveComponent] = useState("A");
 
   const navigate = useNavigate();
   const logoutFunction = () => {
@@ -89,8 +89,6 @@ const Home = () => {
       });
   };
 
-  
-
   const deleteCategory = (categoryId) => {
     if (!tokenbek) {
       toast.error("Token is missing!");
@@ -118,8 +116,6 @@ const Home = () => {
         console.error(err);
       });
   };
-
-
 
   const [edit, setEdit] = useState(false);
   const [formData, setFormData] = useState({
@@ -194,15 +190,46 @@ const Home = () => {
       <div className="admin-panel">
         ``
         {/* Sidebar */}
+        {/* Sidebar */}
         <aside className="sidebar">
           <div className="sidebar-header">Admin Panel</div>
           <ul className="menu">
-            <li onClick={() => setActiveComponent("A")}  >Categories</li>
-              <li onClick={() => setActiveComponent("B")} >Brands</li>
-            <li onClick={() => setActiveComponent("C")}>Cities</li>
-            <li onClick={() => setActiveComponent("D")}>Locations</li>
-            <li onClick={() => setActiveComponent("E")}>Cars</li>
-            <li onClick={() => setActiveComponent("F")}>Models</li>
+            <li
+              className={activeComponent === "A" ? "active" : ""}
+              onClick={() => setActiveComponent("A")}
+            >
+              Categories
+            </li>
+            <li
+              className={activeComponent === "B" ? "active" : ""}
+              onClick={() => setActiveComponent("B")}
+            >
+              Brands
+            </li>
+            <li
+              className={activeComponent === "C" ? "active" : ""}
+              onClick={() => setActiveComponent("C")}
+            >
+              Cities
+            </li>
+            <li
+              className={activeComponent === "D" ? "active" : ""}
+              onClick={() => setActiveComponent("D")}
+            >
+              Locations
+            </li>
+            <li
+              className={activeComponent === "E" ? "active" : ""}
+              onClick={() => setActiveComponent("E")}
+            >
+              Cars
+            </li>
+            <li
+              className={activeComponent === "F" ? "active" : ""}
+              onClick={() => setActiveComponent("F")}
+            >
+              Models
+            </li>
             <li onClick={logoutFunction}>Logout</li>
           </ul>
         </aside>
@@ -222,12 +249,12 @@ const Home = () => {
                   {filteredData.length > 0 ? (
                     filteredData.map((item, index) => (
                       <div key={index} className="search-item">
-                        <span>
-                          {item?.name_en} 
-                        </span>
+                        <span>{item?.name_en}</span>
                         <span> ({item?.name_ru})</span>
-                        <img src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
-                         alt="" />
+                        <img
+                          src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
+                          alt=""
+                        />
                       </div>
                     ))
                   ) : (
@@ -245,85 +272,80 @@ const Home = () => {
             </NavLink>
           </header>
 
-          <section className="dashboard">
-            <div className="card">
-              Malumot qo'shish <br /> <br />
-              <button onClick={() => setPost(true)}> <IoPushOutline/> PUSH</button>
-            </div>
-          </section>
+       
           {/* Table */}
 
-          {activeComponent === "A" &&   <section className="data-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Number</th>
-                  <th>Img</th>
-                  <th>Delete</th>
-                  <th>Edit</th>
-                </tr>
-              </thead>
-              <tbody className="data-count-get">
-                {data?.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item?.name_en}</td>
-                    <td>{item?.name_ru}</td>
-                    <td>
-                      <img
-                        src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
-                        alt="alt"
-                      />
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => {
-                          setCategoryToDelete(item?.id); // Modal uchun ID saqlash
-                          setDelet(true);
-                        }}
-                        className="btn-del"
-                      >
-                        <RiDeleteBin6Line />
-                      </button>
-                    </td>
-                    <th>
-                      <button
-                        onClick={() => {
-                          setCategoryToEdit(item?.id);
-                          setFormData({
-                            nameEn: item?.name_en,
-                            nameRu: item?.name_ru,
-                            file: null,
-                          });
-                          setEdit(true);
-                        }}
-                      >
-                       <FaEdit/>  Edit
-                      </button>
-                    </th>
+          {activeComponent === "A" && (
+            <>
+               <section className="dashboard">
+               <div className="card">
+                 Malumot qo'shish <br /> <br />
+                 <button onClick={() => setPost(true)}>
+                   {" "}
+                   <IoPushOutline /> PUSH
+                 </button>
+               </div>
+             </section>
+            <section className="data-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Number</th>
+                    <th>Img</th>
+                    <th>Delete</th>
+                    <th>Edit</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
-          }
-          {
-            activeComponent === "B" && <Brands/>
-          }
-          {
-            activeComponent === "C" && <Cities/>
-          }
-          {
-            activeComponent === "D" && <Locations/>
-          }
-          {
-            activeComponent === "E" && <Cards/>
-          }
-          {
-            activeComponent === "F" && <Models/>
-          }
-
-        
+                </thead>
+                <tbody className="data-count-get">
+                  {data?.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item?.name_en}</td>
+                      <td>{item?.name_ru}</td>
+                      <td>
+                        <img
+                          src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
+                          alt="alt"
+                        />
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => {
+                            setCategoryToDelete(item?.id); // Modal uchun ID saqlash
+                            setDelet(true);
+                          }}
+                          className="btn-del"
+                        >
+                          <RiDeleteBin6Line />
+                        </button>
+                      </td>
+                      <th>
+                        <button
+                          onClick={() => {
+                            setCategoryToEdit(item?.id);
+                            setFormData({
+                              nameEn: item?.name_en,
+                              nameRu: item?.name_ru,
+                              file: null,
+                            });
+                            setEdit(true);
+                          }}
+                        >
+                          <FaEdit /> Edit
+                        </button>
+                      </th>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+            </>
+          )}
+          {activeComponent === "B" && <Brands />}
+          {activeComponent === "C" && <Cities />}
+          {activeComponent === "D" && <Locations />}
+          {activeComponent === "E" && <Cards />}
+          {activeComponent === "F" && <Models />}
 
           {/* Edit Modal */}
           <div className={edit ? "main-push activ" : "main-push"}>
