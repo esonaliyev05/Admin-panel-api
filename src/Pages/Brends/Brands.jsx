@@ -4,20 +4,23 @@ import { toast } from "react-toastify";
 
 const Brands = () => {
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // ✅ Loader uchun state
+  const [delet, setDelet] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const tokenbek = localStorage.getItem("token");
 
   function getCategory() {
-    setIsLoading(true); // ✅ API so‘rov boshlanishida loaderni yoqish
+    setIsLoading(true);
     fetch("https://realauto.limsa.uz/api/brands")
       .then((res) => res.json())
       .then((response) => {
-        setData(response?.data || []); // ✅ Agar data bo‘sh bo‘lsa, array qilib qo‘yish
-        setIsLoading(false); // ✅ Ma'lumot kelgach loaderni o‘chirish
+        setData(response?.data || []);
+        setIsLoading(false);
       })
       .catch((error) => {
         toast.error("Error fetching data");
         console.error(error);
-        setIsLoading(false); // ✅ Xato bo‘lsa ham loaderni o‘chirish
+        setIsLoading(false);
       });
   }
 
@@ -25,10 +28,37 @@ const Brands = () => {
     getCategory();
   }, []);
 
+  const deleteCategory = (brendId) => {
+    if (!tokenbek) {
+      toast.error("Token is missing");
+      return;
+    }
+    fetch(`https://realauto.limsa.uz/api/brands/${brendId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${tokenbek}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response?.success) {
+          toast.success(response?.message);
+          getCategory();
+          setDelet(false);
+        } else {
+          toast.error(response.message || "Unknown error");
+        }
+      })
+      .catch((err) => {
+        toast.error("Eror deleting category");
+        console.log(err);
+      });
+  };
+
   return (
     <div className="Brands">
       <div className="data-table">
-        {isLoading ? ( // ✅ Agar yuklanayotgan bo‘lsa, loader chiqadi
+        {isLoading ? (
           <h2>Yuklanmoqda...</h2>
         ) : (
           <table>
@@ -36,8 +66,6 @@ const Brands = () => {
               <tr>
                 <th>Brend-Name</th>
                 <th>Brand-logo</th>
-                <th>Name</th>
-                <th>Title</th>
                 <th>Edit</th>
               </tr>
             </thead>
@@ -55,9 +83,15 @@ const Brands = () => {
                     <td>
                       <span>No image available</span>
                     </td>
-                    <td>title</td>
                     <td>
-                      <button>d</button>
+                      <button
+                        onClick={() => {
+                          deleteCategory(categoryToDelete); // O'chirish funksiyasini chaqirish
+                          // setDelet(false); // Modalni yopish
+                        }}
+                      >
+                        d
+                      </button>
                       <button>e</button>
                     </td>
                   </tr>

@@ -89,6 +89,8 @@ const Home = () => {
       });
   };
 
+  
+
   const deleteCategory = (categoryId) => {
     if (!tokenbek) {
       toast.error("Token is missing!");
@@ -116,6 +118,8 @@ const Home = () => {
         console.error(err);
       });
   };
+
+
 
   const [edit, setEdit] = useState(false);
   const [formData, setFormData] = useState({
