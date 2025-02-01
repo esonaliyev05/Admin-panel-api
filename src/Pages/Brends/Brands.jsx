@@ -47,6 +47,7 @@ const Brands = () => {
           setDelet(false);
         } else {
           toast.error(response.message || "Unknown error");
+          
         }
       })
       .catch((err) => {
