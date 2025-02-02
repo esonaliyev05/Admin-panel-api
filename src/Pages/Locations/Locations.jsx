@@ -47,8 +47,8 @@ const Locations = () => {
                 <tr>
                   <th>Brend-Name</th>
                   <th>Brend-logo</th>
-                  <th>Name</th>
                   <th>Title</th>
+                  <th>Delet</th>
                   <th>Edit</th>
                 </tr>
               </thead>
@@ -66,8 +66,11 @@ const Locations = () => {
                       <span>{item?.text}</span>
                     </td>
                     <td>
-                      <button>d</button>
-                      <button>e</button>
+                    <button>delet</button>
+
+                    </td>
+                    <td>
+                      <button>edit</button>
                     </td>
                   </tr>
                 ))}

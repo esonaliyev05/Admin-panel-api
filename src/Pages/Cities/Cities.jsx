@@ -68,9 +68,7 @@ const Cities = () => {
                     </td>
                     <td>{item?.text}</td>
 
-                    <td>
-                      <span>No image available</span>
-                    </td>
+                
                     <td>
                       <button>d</button>
                     </td>

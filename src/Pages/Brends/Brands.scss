@@ -1,0 +1,70 @@
+.Brands{
+    width: 100%;
+    height: 100%;
+
+}
+.brand-push{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); // Qoraygan fon
+    display: none;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+
+
+    &.activ {
+      visibility: visible;
+      opacity: 1;
+      display: flex;
+    }
+
+    .brand-main{
+      width: 100%;
+      height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .main-parnet {
+          width: 450px;
+          height: 400px;
+          background: white;
+
+        
+          position: relative;
+
+        }
+
+    }
+
+  }
+  .brand-edit{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); // Qoraygan fon
+    display: none;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+
+
+    &.activ {
+      visibility: visible;
+      opacity: 1;
+      display: flex;
+    }
+
+  }
