@@ -6,7 +6,13 @@ import { IoPushOutline } from "react-icons/io5";
 
 const Cities = () => {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
+  const [post, setPost] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const tokenbek = localStorage.getItem("token");
+  const [name, setName] = useState("");
+  const [picture, setPicture] = useState("");
+  const [title, setTitle] = useState("");
 
   function getCategory() {
     setLoading(true); // Start loading
@@ -21,7 +27,7 @@ const Cities = () => {
         console.log(error);
       })
       .finally(() => {
-        setLoading(false); // Stop loading when done
+        setLoading(false);
       });
   }
 
@@ -29,23 +35,103 @@ const Cities = () => {
     getCategory();
   }, []);
 
+  const createCategory = (e) => {
+    e.preventDefault();
+
+    if (!tokenbek) {
+      toast.error("Token is missing!");
+      return;
+    }
+
+    if (!title || !name || !picture) {
+      toast.error("Please fill all fields.");
+      return;
+    }
+
+    const formdata = new FormData();
+    formdata.append("title", title);
+    formdata.append("images", picture);
+    formdata.append("name", name);
+
+    fetch("https://realauto.limsa.uz/api/cities", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formdata,
+    })
+      .then((res) => res.json())
+      .then((elem) => {
+        if (elem?.success) {
+          toast.success(elem?.message);
+          e.target.reset();
+          getCategory();
+        } else {
+          toast.error(elem?.message || "Unknown error");
+        }
+      })
+      .catch((err) => {
+        toast.error("Error creating category");
+        console.log(err);
+      });
+  };
+  const [formData, setFormData] = useState({
+    title: "",
+    file: null,
+    name: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!formData.title || !formData.name || formData.file) {
+      toast.error("Please fill all filelds");
+      return;
+    }
+
+    console.log("Yuborilgan malumot:", formData);
+
+    const formDataForEdit = new FormData();
+    formDataForEdit.append("title" , formData.title);
+    formDataForEdit.append("images" , formData.file);
+    formDataForEdit.append("name", formData.name);
+
+    const token = localStorage.getItem("token")
+
+     fetch("" , {
+      method: ""
+     })
+
+  };
+
   return (
     <div className="Cities">
       <div className="container">
-      <section className="dashboard">
-               <div className="card">
-                 Malumot qo'shish <br /> <br />
-                 <button onClick={() => setPost(true)}>
-                   {" "}
-                   <IoPushOutline /> PUSH
-                 </button>
-               </div>
-             </section>
+        <section className="dashboard">
+          <div className="card">
+            Malumot qo'shish <br /> <br />
+            <button onClick={() => setPost(true)}>
+              {" "}
+              <IoPushOutline /> PUSH
+            </button>
+          </div>
+        </section>
         <div className="data-table">
           {loading ? (
-            <h2><ClockLoader/> </h2>
-            // Loder componenti
+            <h2>
+              <ClockLoader />{" "}
+            </h2>
           ) : (
+            // Loder componenti
             <table>
               <thead>
                 <tr>
@@ -68,18 +154,79 @@ const Cities = () => {
                     </td>
                     <td>{item?.text}</td>
 
-                
                     <td>
                       <button>delet</button>
                     </td>
                     <th>
-                      <button>edit</button>
+                      <button onClick={() => setEdit(true)}>edit</button>
                     </th>
                   </tr>
                 ))}
               </tbody>
             </table>
           )}
+        </div>
+      </div>
+
+      <div className={post ? "cities-post activ" : "cities-post"}>
+        <div className="main-parent">
+          <form>
+            <div className="qut-edit" onClick={() => setPost(false)}>
+              X
+            </div>
+
+            <input
+              type="text"
+              name="nameEn"
+              required
+              minLength={3}
+              placeholder="Name (EN)"
+            />
+            <input
+              type="text"
+              name="nameRu"
+              required
+              minLength={3}
+              placeholder="Name (RU)"
+            />
+            <input type="file" name="file" required />
+            <button type="submit" onClick={() => setEdit(false)}>
+              Update
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div className={edit ? "cities-edit activ" : "cities-edit"}>
+        <div className="main-parent">
+          <form>
+            <div
+              className="qut-edit"
+              onClick={() => setEdit(false)}
+              style={{ cursor: "pointer" }}
+            >
+              X
+            </div>
+
+            <input
+              type="text"
+              name="nameEn"
+              required
+              minLength={3}
+              placeholder="Name (EN)"
+            />
+            <input
+              type="text"
+              name="nameRu"
+              required
+              minLength={3}
+              placeholder="Name (RU)"
+            />
+            <input type="file" name="file" required />
+            <button type="submit" onClick={() => setEdit(false)}>
+              Update
+            </button>
+          </form>
         </div>
       </div>
     </div>
