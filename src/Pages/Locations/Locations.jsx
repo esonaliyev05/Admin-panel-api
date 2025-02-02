@@ -5,20 +5,20 @@ import { toast } from "react-toastify";
 
 const Locations = () => {
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // ✅ Loader uchun state
+  const [isLoading, setIsLoading] = useState(true); 
 
   function getCategory() {
-    setIsLoading(true); // ✅ API so‘rov boshlanishida loaderni yoqish
+    setIsLoading(true); 
     fetch("https://realauto.limsa.uz/api/locations")
       .then((res) => res.json())
       .then((response) => {
         setData(response?.data);
-        setIsLoading(false); // ✅ Ma'lumot kelgach loaderni o‘chirish
+        setIsLoading(false);
       })
       .catch((error) => {
         toast.error("Error fetching data");
         console.log(error);
-        setIsLoading(false); // ✅ Xato bo‘lsa ham loaderni o‘chirish
+        setIsLoading(false); 
       });
   }
 
@@ -45,9 +45,9 @@ const Locations = () => {
             <table>
               <thead>
                 <tr>
-                  <th>Brend-Name</th>
-                  <th>Brend-logo</th>
-                  <th>Title</th>
+                  <th>ModelName	</th>
+                  <th>BrandName	</th>
+                  <th>text</th>
                   <th>Delet</th>
                   <th>Edit</th>
                 </tr>
@@ -62,9 +62,8 @@ const Locations = () => {
                         alt=""
                       />
                     </td>
-                    <td>
-                      <span>{item?.text}</span>
-                    </td>
+                     <td>{item?.text}</td>
+
                     <td>
                     <button>delet</button>
 

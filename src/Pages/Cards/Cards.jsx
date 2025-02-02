@@ -14,7 +14,7 @@ const Cards = () => {
     fetch("https://realauto.limsa.uz/api/cars")
       .then((res) => res.json())
       .then((response) => {
-        setData(response?.data || []); 
+        setData(response?.data); 
         setIsLoading(false); 
       })
       .catch((error) => {
@@ -59,8 +59,8 @@ const Cards = () => {
                 {data.length > 0 ? (
                   data.map((item, index) => (
                     <tr key={index}>
-                      <td>{item?.max_speed}</td>
-                      <td>{item?.max_people}</td>
+                      <td>{item?.category_id}</td>
+                      <td>{item?.color}</td>
                       <td>{item?.city_id}</td>
                       <td>{item?.color}</td>
                       <td>{item?.year}</td>

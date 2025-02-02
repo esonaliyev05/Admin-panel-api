@@ -100,7 +100,9 @@ const Brands = () => {
     const formDataForEdit = new FormData();
     formDataForEdit.append("title", formData.title);
     formDataForEdit.append("images", formData.file);
-  
+   
+    const token = localStorage.getItem("token")
+     
     fetch("https://realauto.limsa.uz/api/brands", {
       method: "POST",
       headers: {
@@ -228,6 +230,7 @@ const Brands = () => {
                       <td>
                         <img
                           src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
+                          accept="image/png"
                           alt="Brand logo"
                         />
                       </td>
@@ -274,7 +277,7 @@ const Brands = () => {
     <option value="FERRARI">FERRARI</option>
   </select>
 
-  <input type="file" name="file" required onChange={handleChange} />
+  <input type="file" name="file" accept="image/*" required onChange={handleChange} />
 
   <button type="submit">Update</button>
 </form>
@@ -305,7 +308,7 @@ const Brands = () => {
           <option value="FERRARI">FERRARI</option>
         </select>
 
-        <input type="file" name="file" onChange={handleChange} />
+        <input type="file" name="file" accept="image/*" onChange={handleChange} />
 
         <button type="submit">Update</button>
       </form>

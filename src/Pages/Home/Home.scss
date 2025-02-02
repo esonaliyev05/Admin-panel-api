@@ -195,20 +195,26 @@ body {
 
           th,
           td {
-            width: 200px;
+            min-width: 50px;
+            height: 100px;
             border: 1px solid $secondary-color;
-            padding: 0.75rem;
+            padding: 0.25rem;
             text-align: left;
 
+
             img {
-              width: 290px;
-              height: 180px;
+              width: 250px;
+              height: 98px;
+              display: flex;
               margin: 0 auto;
+              object-fit: cover;
+
             }
 
             button {
               display: flex;
               align-items: center;
+              margin: 0 auto;
             }
           }
 
