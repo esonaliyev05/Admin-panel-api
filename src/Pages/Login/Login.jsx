@@ -48,9 +48,12 @@ const Login = () => {
 
   return (
     <div className="form-container">
-      <meta name="description" content="Biz haqimizda ma'lumot oling" />
-      <meta name="Login" content="Login xaqida malumot oling" />
-      
+      {/* Video fon */}
+      <video className="background-video" autoPlay loop muted>
+        <source src="https://real-auto-admin.vercel.app/vedios/Ultimate Supercar Showroom in Dubai - Dourado Luxury Cars!.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
       <div className="form-text">
         <h1>Login</h1>
         <div className="img">
@@ -76,7 +79,7 @@ const Login = () => {
           placeholder="Password"
           required
         />
-        <button type="submit" disabled={loading}> 
+        <button type="submit" disabled={loading}>
           {loading ? "Loading..." : "Submit"} {/* Loadingni ko'rsatish */}
         </button>
       </form>

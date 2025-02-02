@@ -239,9 +239,9 @@ const Brands = () => {
                           Delete
                         </button>
                       </td>
-                      <td>
+                      <th>
                         <button onClick={() => setEdit(true)} >Edit</button>
-                      </td>
+                      </th>
                     </tr>
                   ))
                 ) : (

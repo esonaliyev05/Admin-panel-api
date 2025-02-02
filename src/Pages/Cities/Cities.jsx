@@ -70,11 +70,11 @@ const Cities = () => {
 
                 
                     <td>
-                      <button>d</button>
+                      <button>delet</button>
                     </td>
-                    <td>
-                      <button>e</button>
-                    </td>
+                    <th>
+                      <button>edit</button>
+                    </th>
                   </tr>
                 ))}
               </tbody>

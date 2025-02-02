@@ -68,9 +68,9 @@ const Locations = () => {
                     <button>delet</button>
 
                     </td>
-                    <td>
+                    <th>
                       <button>edit</button>
-                    </td>
+                    </th>
                   </tr>
                 ))}
               </tbody>
