@@ -182,7 +182,7 @@ const Brands = () => {
       .then((response) => {
         if (response?.success) {
           toast.success(response?.message);
-          getCategory(); // Ma’lumotlarni qayta yuklash
+          getCategory(); 
         } else {
           toast.error(response?.message || "Unknown error");
         }

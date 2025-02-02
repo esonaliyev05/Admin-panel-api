@@ -107,11 +107,32 @@ const Cities = () => {
 
     const token = localStorage.getItem("token")
 
-     fetch("" , {
-      method: ""
+     fetch("https://realauto.limsa.uz/api/cities" , {
+      method: "POST",
+      headers:{
+      Authorization: `Bearer ${token}`,
+
+      },
+      body: formData,
+
      })
+     .then((res) => res.json())
+     .then((elem) => {
+      if (elem?.success) {
+        toast.success(elem?.message);
+        e.target.reset();
+      }else {
+        toast.error(elem?.message || "Unknown error");
+      }
+     })
+     .catch((err) => {
+      toast.error("Error creating catigory");
+      console.log(err);
+     });
 
   };
+
+   
 
   return (
     <div className="Cities">

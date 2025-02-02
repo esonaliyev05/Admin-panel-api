@@ -78,6 +78,7 @@ const Home = () => {
       .then((elem) => {
         if (elem?.success) {
           toast.success(elem?.message);
+          getCategory();
           e.target.reset();
         } else {
           toast.error(elem?.message || "Unknown error");
