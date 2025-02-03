@@ -58,7 +58,7 @@ const Brands = () => {
     fetch("https://realauto.limsa.uz/api/brands", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${tokenbek}`,
+        Authorization: `Bearer ${tokenbek}`, 
       },
       body: formDataForCreate,
     })
@@ -103,6 +103,7 @@ const Brands = () => {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${tokenbek}`,
+        "Content-Type": "multipart/form-data"
       },
       body: formDataForEdit,
     })

@@ -10,10 +10,10 @@ const Cities = () => {
   const [post, setPost] = useState(false);
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState("");
-  const [title, setTitle] = useState("");
+  const [text  , setText] = useState("");
   const [picture, setPicture] = useState(null);
   const [formData, setFormData] = useState({
-    title: "",
+    text: "",
     file: null,
     name: "",
   });
@@ -36,7 +36,6 @@ const Cities = () => {
       .then((res) => res.json())
       .then((response) => {
         setData(response?.data || []);
-        toast.success(response?.message || "Data loaded successfully!");
       })
       .catch((error) => {
         toast.error("Error fetching data");
@@ -52,31 +51,35 @@ const Cities = () => {
   }, []);
 
   const handleChange = (e) => {
+    console.log(e);  // Eventni konsolga chiqarib tekshirib ko'ring
     const { name, value, files } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: files ? files[0] : value,
     }));
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!formData.title || !formData.name || !formData.file) {
+  
+    // Ensure all required fields are filled
+    if (!formData.name || !formData.text || !formData.file) {
       toast.error("Please fill all fields, including the image!");
       return;
     }
-
+  
     const formDataForSubmit = new FormData();
-    formDataForSubmit.append("title", formData.title);
-    formDataForSubmit.append("images", formData.file);
     formDataForSubmit.append("name", formData.name);
-
+    formDataForSubmit.append("text", formData.text); // Use 'text' here
+    formDataForSubmit.append("images", formData.file);
+  
     setLoading(true);
     fetch("https://realauto.limsa.uz/api/cities", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
+        // Remove Content-Type header as FormData will handle it
       },
       body: formDataForSubmit,
     })
@@ -84,7 +87,7 @@ const Cities = () => {
       .then((elem) => {
         if (elem?.success) {
           toast.success(elem?.message);
-          setFormData({ title: "", file: null, name: "" });
+          setFormData({ name: "", text: "", file: null });
           getCategory();
           setPost(false);
         } else {
@@ -92,17 +95,18 @@ const Cities = () => {
         }
       })
       .catch((err) => {
-        toast.error("Error creating category");
+        toast.error("Error creating city");
         console.error(err);
       })
       .finally(() => {
         setLoading(false);
       });
   };
+  
 
   const handleEdit = (item) => {
     setFormData({
-      title: item.title,
+      text: item.text,
       name: item.name,
       file: null, // Keep previous image when editing
     });
@@ -113,13 +117,13 @@ const Cities = () => {
   const handleEditSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.title || !formData.name) {
+    if (!formData.text || !formData.name) {
       toast.error("Please fill all fields");
       return;
     }
 
     const formDataForEdit = new FormData();
-    formDataForEdit.append("title", formData.title);
+    formDataForEdit.append("text", formData.text);
     formDataForEdit.append("name", formData.name);
 
     if (formData.file) {
@@ -258,11 +262,11 @@ const Cities = () => {
               />
               <input
                 type="text"
-                name="title"
+                name="text"
                 required
                 minLength={3}
-                placeholder="Title"
-                value={formData.title}
+                placeholder="Text"
+                value={formData.text}
                 onChange={handleChange}
               />
               <input type="file" name="file" required onChange={handleChange} />
