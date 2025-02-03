@@ -11,6 +11,7 @@ import Brands from "../Brends/Brands";
 import Cities from "../Cities/Cities";
 import Locations from "../Locations/Locations";
 import Models from "../Models/Models";
+import { HiMiniBars3 } from "react-icons/hi2";
 
 const Home = () => {
   const [user, setUser] = useState(false);
@@ -237,6 +238,9 @@ const Home = () => {
         <main className="main-content">
           <header className="navbar">
             <div className="search-bar">
+              <div className="bars">
+                {/* <HiMiniBars3/> */}
+              </div>
               <input
                 type="search"
                 className="search-input"

@@ -10,10 +10,11 @@ const Brands = () => {
   const tokenbek = localStorage.getItem("token");
   const [pushopen, setPush] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [delet, setDelet] = useState(false);
-  const [title, setTitle] = useState("");
-  const [picture, setPicture] = useState(null);
   const [brendId, setBrendId] = useState(null);
+  const [formData, setFormData] = useState({
+    title: "",
+    file: null,
+  });
 
   function getCategory() {
     setIsLoading(true);
@@ -34,51 +35,6 @@ const Brands = () => {
     getCategory();
   }, []);
 
-  // const createCategory = (e) => {
-  //   e.preventDefault();
-
-  //   if (!tokenbek) {
-  //     toast.error("Token is missing!");
-  //     return;
-  //   }
-
-  //   if (!title || !picture) {
-  //     toast.error("Please fill all fields.");
-  //     return;
-  //   }
-
-  //   const formdata = new FormData();
-  //   formdata.append("title", title);
-  //   formdata.append("images", picture);
-
-  //   fetch("https://realauto.limsa.uz/api/brands", {
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: `Bearer ${tokenbek}`,
-  //     },
-  //     body: formdata,
-  //   })
-  //     .then((res) => res.json())
-  //     .then((elem) => {
-  //       if (elem?.success) {
-  //         toast.success(elem?.message);
-  //         e.target.reset();
-  //         getCategory();
-  //       } else {
-  //         toast.error(elem?.message || "Unknown error");
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       toast.error("Error creating category");
-  //       console.log(err);
-  //     });
-  // };
-
-  const [formData, setFormData] = useState({
-    title: "",
-    file: null,
-  });
-
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData((prev) => ({
@@ -95,20 +51,16 @@ const Brands = () => {
       return;
     }
 
-    console.log("Yuborilayotgan ma'lumot:", formData);
-
-    const formDataForEdit = new FormData();
-    formDataForEdit.append("title", formData.title);
-    formDataForEdit.append("images", formData.file);
-
-    const token = localStorage.getItem("token");
+    const formDataForCreate = new FormData();
+    formDataForCreate.append("title", formData.title);
+    formDataForCreate.append("images", formData.file);
 
     fetch("https://realauto.limsa.uz/api/brands", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${tokenbek}`,
       },
-      body: formDataForEdit,
+      body: formDataForCreate,
     })
       .then((res) => res.json())
       .then((response) => {
@@ -124,6 +76,12 @@ const Brands = () => {
         toast.error("Error creating category");
         console.log(err);
       });
+  };
+
+  const handleEdit = (id, title) => {
+    setBrendId(id);
+    setFormData({ ...formData, title: title });
+    setEdit(true);
   };
 
   const handleEditSubmit = (e) => {
@@ -164,15 +122,13 @@ const Brands = () => {
       });
   };
 
-  const deleteCategory = (brendId) => {
+  const deleteCategory = (id) => {
     if (!tokenbek) {
       toast.error("Token is missing");
       return;
     }
 
-    console.log("Deleting brand ID:", brendId);
-
-    fetch(`https://realauto.limsa.uz/api/brands/${brendId}`, {
+    fetch(`https://realauto.limsa.uz/api/brands/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${tokenbek}`,
@@ -182,14 +138,14 @@ const Brands = () => {
       .then((response) => {
         if (response?.success) {
           toast.success(response?.message);
-          getCategory(); 
+          getCategory();
         } else {
           toast.error(response?.message || "Unknown error");
         }
       })
       .catch((err) => {
         toast.error("Error deleting category");
-        console.error("Delete error:", err);
+        console.error(err);
       });
   };
 
@@ -238,7 +194,9 @@ const Brands = () => {
                         </button>
                       </td>
                       <th>
-                        <button onClick={() => setEdit(true)}>Edit</button>
+                        <button onClick={() => handleEdit(item.id, item.title)}>
+                          Edit
+                        </button>
                       </th>
                     </tr>
                   ))
@@ -275,7 +233,6 @@ const Brands = () => {
                 <option value="BMW-X5">BMW-X5</option>
                 <option value="AUDI">AUDI</option>
                 <option value="FERRARI">FERRARI</option>
-                <option value="">ROLSROIS</option>
               </select>
 
               <input
@@ -286,7 +243,7 @@ const Brands = () => {
                 onChange={handleChange}
               />
 
-              <button type="submit">Update</button>
+              <button type="submit">Add</button>
             </form>
           </div>
         </div>

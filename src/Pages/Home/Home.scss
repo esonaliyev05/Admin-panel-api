@@ -169,12 +169,15 @@ body {
         display: flex;
         align-items: center;
         gap: 35px;
+        
       }
     }
 
     .data-table {
+      width: 100%;
       padding: 1rem;
-      // overflow-y: scroll;
+      overflow-x: scroll;
+
 
       h2 {
         width: 100%;
@@ -187,12 +190,17 @@ body {
 
       table {
         width: 100%;
+        height: auto;
         border-collapse: collapse;
-        overflow-y: scroll;
+        overflow-x: scroll;
+
         .data-count-get {
+          width: auto;
+          height: 10vh;
+
+          tr{
           width: 100%;
-          height: 50vh;
-          overflow-y: scroll;
+          height: auto;
 
           th,
           td {
@@ -202,7 +210,6 @@ body {
             padding: 0.25rem;
             text-align: center;
             font-weight: 800;
-            font-size: 20px;
           
 
             img {
@@ -229,6 +236,8 @@ body {
             background-color: $primary-color;
             color: $text-color;
           }
+        }
+
 
           .btn-del {
             background: none;
@@ -450,3 +459,9 @@ body {
     }
   }
 }
+
+@media screen and (max-width: 447px){
+  
+  
+}
+

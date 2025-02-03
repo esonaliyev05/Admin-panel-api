@@ -59,23 +59,38 @@ const Cards = () => {
                 {data.length > 0 ? (
                   data.map((item, index) => (
                     <tr key={index}>
-                      <td>{item?.category_id}</td>
-                      <td>{item?.color}</td>
-                      <td>{item?.city_id}</td>
+                      <td>{item?.max_speed}</td>
+                      <td>{item?.max_people}</td>
+                      <td>{item?.transmission}</td>
+                      {/* <td>{item?.motor}</td>
+                      <td>{item?.drive_side}</td>
+                      <td>{item?.petrol}</td>
+                      <td>{item?.limitperday}</td>
+                      <td>{item?.deposit}</td>
+                      <td>{item?.premium_protection}</td>
+                      <td>{item?.price_in_aed}</td>
+                      <td>{item?.price_in_usd}</td>
+                      <td>{item?.price_in_aed_sale}</td>
+                      <td>{item?.price_in_usd_sale}</td>
+                      <td>{item?.location_id}</td>
                       <td>{item?.color}</td>
                       <td>{item?.year}</td>
+                      <td>{item?.seconds}</td> */}
                       <td>
                         <img
                           src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
                           alt="Car"
                         />
                       </td>
-                      <td>
+                      {/* <td>
                         <span>{item?.text}</span>
+                      </td> */}
+                      <td>
+                      <button>delet</button>
+
                       </td>
                       <td>
-                        <button>d</button>
-                        <button>e</button>
+                        <button>edit</button>
                       </td>
                     </tr>
                   ))
