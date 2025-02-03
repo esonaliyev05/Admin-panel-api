@@ -238,9 +238,7 @@ const Home = () => {
         <main className="main-content">
           <header className="navbar">
             <div className="search-bar">
-              <div className="bars">
-                {/* <HiMiniBars3/> */}
-              </div>
+              <div className="bars">{/* <HiMiniBars3/> */}</div>
               <input
                 type="search"
                 className="search-input"
@@ -277,73 +275,72 @@ const Home = () => {
             </NavLink>
           </header>
 
-       
           {/* Table */}
 
           {activeComponent === "A" && (
             <>
-               <section className="dashboard">
-               <div className="card">
-                 Malumot qo'shish <br /> <br />
-                 <button onClick={() => setPost(true)}>
-                   {" "}
-                   <IoPushOutline /> PUSH
-                 </button>
-               </div>
-             </section>
-            <section className="data-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Number</th>
-                    <th>Img</th>
-                    <th>Delete</th>
-                    <th>Edit</th>
-                  </tr>
-                </thead>
-                <tbody className="data-count-get">
-                  {data?.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item?.name_en}</td>
-                      <td>{item?.name_ru}</td>
-                      <td>
-                        <img
-                          src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
-                          alt="alt"
-                        />
-                      </td>
-                      <td>
-                        <button
-                          onClick={() => {
-                            setCategoryToDelete(item?.id); // Modal uchun ID saqlash
-                            setDelet(true);
-                          }}
-                          className="btn-del"
-                        >
-                          <RiDeleteBin6Line />
-                        </button>
-                      </td>
-                      <th>
-                        <button
-                          onClick={() => {
-                            setCategoryToEdit(item?.id);
-                            setFormData({
-                              nameEn: item?.name_en,
-                              nameRu: item?.name_ru,
-                              file: null,
-                            });
-                            setEdit(true);
-                          }}
-                        >
-                          <FaEdit /> Edit
-                        </button>
-                      </th>
+              <section className="dashboard">
+                <div className="card">
+                  Malumot qo'shish <br /> <br />
+                  <button onClick={() => setPost(true)}>
+                    {" "}
+                    <IoPushOutline /> PUSH
+                  </button>
+                </div>
+              </section>
+              <section className="data-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Number</th>
+                      <th>Img</th>
+                      <th>Delete</th>
+                      <th>Edit</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
+                  </thead>
+                  <tbody className="data-count-get">
+                    {data?.map((item, index) => (
+                      <tr key={index}>
+                        <td>{item?.name_en}</td>
+                        <td>{item?.name_ru}</td>
+                        <td>
+                          <img
+                            src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
+                            alt="alt"
+                          />
+                        </td>
+                        <td>
+                          <button
+                            onClick={() => {
+                              setCategoryToDelete(item?.id); // Modal uchun ID saqlash
+                              setDelet(true);
+                            }}
+                            className="btn-del"
+                          >
+                            <RiDeleteBin6Line />
+                          </button>
+                        </td>
+                        <th>
+                          <button
+                            onClick={() => {
+                              setCategoryToEdit(item?.id);
+                              setFormData({
+                                nameEn: item?.name_en,
+                                nameRu: item?.name_ru,
+                                file: null,
+                              });
+                              setEdit(true);
+                            }}
+                          >
+                            <FaEdit /> Edit
+                          </button>
+                        </th>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </section>
             </>
           )}
           {activeComponent === "B" && <Brands />}

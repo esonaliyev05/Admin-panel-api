@@ -10,7 +10,7 @@ const Cities = () => {
   const [post, setPost] = useState(false);
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState("");
-  const [text  , setText] = useState("");
+  const [text, setText] = useState("");
   const [picture, setPicture] = useState(null);
   const [formData, setFormData] = useState({
     text: "",
@@ -51,29 +51,28 @@ const Cities = () => {
   }, []);
 
   const handleChange = (e) => {
-    console.log(e);  // Eventni konsolga chiqarib tekshirib ko'ring
+    console.log(e); // Eventni konsolga chiqarib tekshirib ko'ring
     const { name, value, files } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: files ? files[0] : value,
     }));
   };
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     // Ensure all required fields are filled
     if (!formData.name || !formData.text || !formData.file) {
       toast.error("Please fill all fields, including the image!");
       return;
     }
-  
+
     const formDataForSubmit = new FormData();
     formDataForSubmit.append("name", formData.name);
     formDataForSubmit.append("text", formData.text); // Use 'text' here
     formDataForSubmit.append("images", formData.file);
-  
+
     setLoading(true);
     fetch("https://realauto.limsa.uz/api/cities", {
       method: "POST",
@@ -102,7 +101,6 @@ const Cities = () => {
         setLoading(false);
       });
   };
-  
 
   const handleEdit = (item) => {
     setFormData({
@@ -228,7 +226,9 @@ const Cities = () => {
                       </td>
                       <td>{item?.text}</td>
                       <td>
-                        <button onClick={() => handleDelete(item.id)}>Delete</button>
+                        <button onClick={() => handleDelete(item.id)}>
+                          Delete
+                        </button>
                       </td>
                       <td>
                         <button onClick={() => handleEdit(item)}>Edit</button>
@@ -250,7 +250,9 @@ const Cities = () => {
         <div className="cities-post activ">
           <div className="main-parent">
             <form onSubmit={handleSubmit}>
-              <div className="qut-edit" onClick={() => setPost(false)}>X</div>
+              <div className="qut-edit" onClick={() => setPost(false)}>
+                X
+              </div>
               <input
                 type="text"
                 name="name"
@@ -280,7 +282,9 @@ const Cities = () => {
         <div className="cities-edit activ">
           <div className="main-parent">
             <form onSubmit={handleEditSubmit}>
-              <div className="qut-edit" onClick={() => setEdit(false)}>X</div>
+              <div className="qut-edit" onClick={() => setEdit(false)}>
+                X
+              </div>
               <input
                 type="text"
                 name="name"
