@@ -64,7 +64,7 @@ const Login = () => {
         </div>
       </div>
 
-      <form onSubmit={loginSubmit}>
+      <form onSubmit={loginSubmit} className="form-login">
         <input
           onChange={(e) => setPhone(e.target.value)}
           value={phone}

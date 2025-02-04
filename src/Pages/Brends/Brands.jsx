@@ -215,7 +215,7 @@ const Brands = () => {
       <div className={pushopen ? "brand-push activ" : "brand-push"}>
         <div className="brand-main">
           <div className="main-parent">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="breds-form">
               <div className="qut-edit" onClick={() => setPush(false)}>
                 X
               </div>
@@ -253,7 +253,7 @@ const Brands = () => {
       <div className={edit ? "brand-edit activ" : "brand-edit"}>
         <div className="brand-main">
           <div className="main-parent">
-            <form onSubmit={handleEditSubmit}>
+            <form onSubmit={handleEditSubmit} className="breds-form">
               <div className="qut-edit" onClick={() => setEdit(false)}>
                 X
               </div>
@@ -265,7 +265,7 @@ const Brands = () => {
                 required
                 style={{ width: "100", height: "40px", outline: "none" }}
               >
-                <option value="">Tanlang...</option>
+                        <option value="">Tanlang...</option>
                 <option value="BMW">BMW</option>
                 <option value="MERS">MERS</option>
                 <option value="BMW-M5">BMW-M5</option>

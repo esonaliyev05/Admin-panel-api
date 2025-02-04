@@ -249,7 +249,7 @@ const Cities = () => {
       {post && (
         <div className="cities-post activ">
           <div className="main-parent">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="citis-form">
               <div className="qut-edit" onClick={() => setPost(false)}>
                 X
               </div>
@@ -281,7 +281,7 @@ const Cities = () => {
       {edit && (
         <div className="cities-edit activ">
           <div className="main-parent">
-            <form onSubmit={handleEditSubmit}>
+            <form onSubmit={handleEditSubmit} className="citis-form">
               <div className="qut-edit" onClick={() => setEdit(false)}>
                 X
               </div>

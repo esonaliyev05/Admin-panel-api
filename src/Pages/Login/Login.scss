@@ -50,7 +50,7 @@
 }
 
 /* Formning stili */
-form {
+.form-login{
   background: rgba(255, 255, 255, 0.8); /* Formaga yarim shaffof fon qo'shish */
   padding: 2rem;
   border-radius: 8px;
@@ -61,23 +61,58 @@ form {
   width: 100%;
   max-width: 400px;
   z-index: 2; /* Formani video ustiga chiqarish */
+
+  input {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease-in-out;
+  }
+  
+  input:focus {
+    border-color: #007bff;
+  }
+  
+  /* Tugma uchun uslub */
+  button {
+    padding: 0.75rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Loadingni ko'rsatish uchun spinner */
+  button[disabled] {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  button[disabled]:hover {
+    background-color: #cccccc;
+  }
+  
+  button:disabled::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 3px solid #fff;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
 }
 
-/* Inputlar uchun uslub */
-input {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.2s ease-in-out;
-}
-
-input:focus {
-  border-color: #007bff;
-}
-
-/* Tugma uchun uslub */
 button {
   padding: 0.75rem;
   background-color: #007bff;
@@ -112,6 +147,8 @@ button:disabled::after {
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
+
+/* Inputlar uchun uslub */
 
 /* Spinner animatsiyasi */
 @keyframes spin {

@@ -227,7 +227,7 @@ const Locations = () => {
 
       <div className={post ? "Location-main activ" : "Location-main"}>
         <div className="main-parent">
-          <form onSubmit={createCategory}>
+          <form onSubmit={createCategory} className="Location-form">
             <div className="qut-edit" onClick={() => setPost(false)}>
               X
             </div>
@@ -258,9 +258,10 @@ const Locations = () => {
         </div>
       </div>
 
+
       <div className={edit ? "Location-edit activ" : "Location-edit"}>
         <div className="main-parent">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="Location-form">
             <div className="qut-edit" onClick={() => setEdit(false)}>
               X
             </div>
@@ -270,7 +271,9 @@ const Locations = () => {
               required
               minLength={3}
               placeholder="Name"
+              value={formData.name}
               onChange={handleChange}
+
             />
             <input
               type="text"
@@ -278,13 +281,16 @@ const Locations = () => {
               required
               minLength={3}
               placeholder="Text"
+              value={formData.text}
               onChange={handleChange}
+
             />
             <input type="file" name="file" required onChange={handleChange} />
             <button type="submit">Submit</button>
           </form>
         </div>
       </div>
+
     </div>
   );
 };

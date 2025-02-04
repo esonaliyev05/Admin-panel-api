@@ -352,7 +352,7 @@ const Home = () => {
           {/* Edit Modal */}
           <div className={edit ? "main-push activ" : "main-push"}>
             <div className="main-parent">
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} className="home-form">
                 <div className="qut-edit" onClick={() => setEdit(false)}>
                   X
                 </div>
@@ -390,7 +390,7 @@ const Home = () => {
           {/* Post Modal */}
           <div className={post ? "main-post activ" : "main-post"}>
             <div className="main-parent">
-              <form onSubmit={createCategory}>
+              <form onSubmit={createCategory} className="home-form">
                 <div className="qut-edit" onClick={() => setPost(false)}>
                   X
                 </div>
