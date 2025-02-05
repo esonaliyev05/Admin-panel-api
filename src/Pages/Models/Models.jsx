@@ -2,12 +2,21 @@ import React, { useEffect, useState } from "react";
 import "./Models.scss";
 import { ClockLoader } from "react-spinners";
 import { IoPushOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 const Models = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [edit, setEdit] = useState(false);
   const [post, setPost] = useState(false);
+  const [formData, setFormData] = useState({
+    brand_id: "",
+    file: null,
+    name: "",
+  });
+
+  const [cityId, setCityId] = useState(null);
+  const token = localStorage.getItem("token");
 
   function getCategory() {
     setIsLoading(true); // ✅ API so‘rov boshlanishida loaderni yoqish
@@ -15,7 +24,7 @@ const Models = () => {
       .then((res) => res.json())
       .then((response) => {
         setData(response?.data);
-        setIsLoading(false); // ✅ Ma'lumot kelgach loaderni o‘chirish
+        setIsLoading(false); //
       })
       .catch((error) => {
         toast.error("Error fetching data");
@@ -28,6 +37,71 @@ const Models = () => {
     getCategory();
   }, []);
 
+  const handleChange = (e) => {
+    console.log(e);
+
+    const { name, value, files } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!formData.name || !formData.brand_id) {
+      toast.error("Please fill all fields, including the image!");
+      return;
+    }
+
+    const formDataForSubmit = new FormData();
+
+    formDataForSubmit.append("name", formData.name);
+    formDataForSubmit.append("brand_id", formData.brand_id);
+     
+    setIsLoading(true)
+
+    fetch("https://realauto.limsa.uz/api/models", {
+      method: "POST",
+
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formDataForSubmit,
+    })
+     .then((res) => res.json())
+     .then((elem) => {
+      if (elem?.succsess) {
+        toast.success(elem?.message);
+        setFormData({name: "" , brand_id: ""});
+        getCategory();
+        setPost(false);
+      }else {
+        toast.error(elem?.message || "Unknown error");
+      }
+     })
+     .catch((err) => {
+      toast.error("Error creating city");
+      console.error(err)
+     })
+      .finally(() => {
+        setIsLoading(false)
+      })
+
+  };
+
+  const handleEdit = (item) => {
+    setFormData({
+      name: item.name,
+      brand_id: item.brand_id
+
+    });
+    setEdit(true)
+  }
+
+
   return (
     <div className="Models">
       <div className="container">
@@ -35,7 +109,6 @@ const Models = () => {
           <div className="card">
             Malumot qo'shish <br /> <br />
             <button onClick={() => setPost(true)}>
-              {" "}
               <IoPushOutline /> PUSH
             </button>
           </div>
@@ -44,7 +117,7 @@ const Models = () => {
         <div className="data-table">
           {isLoading ? (
             <h2>
-              <ClockLoader />{" "}
+              <ClockLoader />
             </h2>
           ) : (
             <table>
@@ -62,9 +135,7 @@ const Models = () => {
                     <tr key={index}>
                       <td>{item?.name}</td>
                       <td>{item?.brand_id}</td>
-                      {/* <td>
-                        <span>{item?.text}</span>
-                      </td> */}
+
                       <td>
                         <button onClick={() => setPost(true)}>delet</button>
                       </td>
@@ -86,34 +157,38 @@ const Models = () => {
 
       <div className={post ? "Models-post activ" : "Models-post"}>
         <div className="main-parent">
-          <form className="home-form">
+          <form className="home-form" onSubmit={handleSubmit}>
             <div className="qut-edit" onClick={() => setPost(false)}>
               X
             </div>
 
             <input
               type="text"
-              name="nameEn"
+              name="name"
               required
               minLength={3}
-              placeholder="Name (EN)"
+              placeholder="Name"
+              value={formData.name}
+              onChange={handleChange}
+
             />
             <input
               type="text"
-              name="nameRu"
+              name="brand_id"
               required
               minLength={3}
-              placeholder="Name (RU)"
+              placeholder="Bread_id"
+              value={formData.brand_id}
+              
             />
-            <input type="file" name="file" required />
-            <button type="submit" onClick={() => setEdit(false)}>
+            <button type="submit">
               Update
             </button>
           </form>
         </div>
       </div>
       <div className={edit ? "Modles-edit activ" : "Modles-edit"}>
-      <div className="main-parent">
+        <div className="main-parent">
           <form className="home-form">
             <div className="qut-edit" onClick={() => setEdit(false)}>
               X
@@ -125,6 +200,7 @@ const Models = () => {
               required
               minLength={3}
               placeholder="Name (EN)"
+
             />
             <input
               type="text"
@@ -132,6 +208,7 @@ const Models = () => {
               required
               minLength={3}
               placeholder="Name (RU)"
+
             />
             <input type="file" name="file" required />
             <button type="submit" onClick={() => setEdit(false)}>
@@ -143,5 +220,6 @@ const Models = () => {
     </div>
   );
 };
+
 
 export default Models;
