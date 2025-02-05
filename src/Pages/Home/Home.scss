@@ -651,11 +651,37 @@ body {
             overflow-y: auto;
             z-index: 10;
 
+            .search-item {
+              padding: 10px;
+              font-size: 14px;
+              border-bottom: 1px solid #eee;
+              cursor: pointer;
+              display: flex;
+              width: 100%;
+              justify-content: space-around;
+              align-items: center;
+    
+              span {
+                color: black;
+                font-weight: 800;
+                font-size: 15px;
+              }
+    
+              img {
+                width: 50px;
+              }
+    
+              &:hover {
+                background: #f0f0f0;
+              }
+            }
+    
+
           }
   
           .search-item {
             padding: 10px;
-            font-size: 16px;
+            font-size: 14px;
             border-bottom: 1px solid #eee;
             cursor: pointer;
             display: flex;
@@ -681,7 +707,7 @@ body {
           .no-results {
             padding: 10px;
             color: red;
-            font-size: 58px;
+            font-size: 28px;
             text-align: center;
             font-weight: 800;
             width: 100%;

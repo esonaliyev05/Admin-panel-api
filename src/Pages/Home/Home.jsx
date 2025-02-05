@@ -193,7 +193,7 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="admin-panel">
-        ``
+        
         {/* Sidebar */}
         {/* Sidebar */}
         <aside className={open ? "sidebar activ" : "sidebar"}>

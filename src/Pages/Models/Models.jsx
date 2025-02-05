@@ -6,6 +6,8 @@ import { IoPushOutline } from "react-icons/io5";
 const Models = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [edit, setEdit] = useState(false);
+  const [post, setPost] = useState(false);
 
   function getCategory() {
     setIsLoading(true); // ✅ API so‘rov boshlanishida loaderni yoqish
@@ -64,11 +66,10 @@ const Models = () => {
                         <span>{item?.text}</span>
                       </td> */}
                       <td>
-                      <button>delet</button>
-
+                        <button onClick={() => setPost(true)}>delet</button>
                       </td>
                       <th>
-                        <button>edit</button>
+                        <button onClick={() => setEdit(true)}>edit</button>
                       </th>
                     </tr>
                   ))
@@ -80,6 +81,63 @@ const Models = () => {
               </tbody>
             </table>
           )}
+        </div>
+      </div>
+
+      <div className={post ? "Models-post activ" : "Models-post"}>
+        <div className="main-parent">
+          <form className="home-form">
+            <div className="qut-edit" onClick={() => setPost(false)}>
+              X
+            </div>
+
+            <input
+              type="text"
+              name="nameEn"
+              required
+              minLength={3}
+              placeholder="Name (EN)"
+            />
+            <input
+              type="text"
+              name="nameRu"
+              required
+              minLength={3}
+              placeholder="Name (RU)"
+            />
+            <input type="file" name="file" required />
+            <button type="submit" onClick={() => setEdit(false)}>
+              Update
+            </button>
+          </form>
+        </div>
+      </div>
+      <div className={edit ? "Modles-edit activ" : "Modles-edit"}>
+      <div className="main-parent">
+          <form className="home-form">
+            <div className="qut-edit" onClick={() => setEdit(false)}>
+              X
+            </div>
+
+            <input
+              type="text"
+              name="nameEn"
+              required
+              minLength={3}
+              placeholder="Name (EN)"
+            />
+            <input
+              type="text"
+              name="nameRu"
+              required
+              minLength={3}
+              placeholder="Name (RU)"
+            />
+            <input type="file" name="file" required />
+            <button type="submit" onClick={() => setEdit(false)}>
+              Update
+            </button>
+          </form>
         </div>
       </div>
     </div>
