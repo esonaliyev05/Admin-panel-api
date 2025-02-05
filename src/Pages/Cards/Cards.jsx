@@ -5,23 +5,46 @@ import { ClockLoader } from "react-spinners";
 import { IoPushOutline } from "react-icons/io5";
 import { GoX } from "react-icons/go";
 
-
 const Cards = () => {
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); 
-  const [edit , setEdit] = useState(false)
-  const [post , setPost] = useState(false)
-  const [delet , setDelet] = useState(false)
-
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [edit, setEdit] = useState(false);
+  const [post, setPost] = useState(false);
+  const [delet, setDelet] = useState(false);
+  const [formData, setFormData] = useState({
+    brand_id: "",
+    model_id: "",
+    city_id: "",
+    color: "",
+    year: "",
+    seconds: "",
+    category_id: "",
+    files: null,
+    max_speed: "",
+    max_people: "",
+    transmission: "",
+    motor: "",
+    drive_side: "",
+    petrol: "",
+    limitperday: "",
+    deposit: "",
+    premium_protection: "",
+    price_in_aed: "",
+    price_in_usd: "",
+    price_in_aed_sale: "",
+    price_in_usd_sale: "",
+    location_id: "",
+    inclusive: "",
+    cover: "",
+  });
 
   function getCategory() {
-    setIsLoading(true); 
+    setIsLoading(true);
     fetch("https://realauto.limsa.uz/api/cars")
       .then((res) => res.json())
       .then((response) => {
-        setData(response?.data); 
-        setIsLoading(false); 
+        setData(response?.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         toast.error("Error fetching data");
@@ -31,23 +54,58 @@ const Cards = () => {
   }
 
   useEffect(() => {
+    let isMounted = true;
     getCategory();
+  
+    return () => {
+      isMounted = false;
+    };
   }, []);
+  
 
   const handleChange = (e) => {
-   const {name , value , files} = e.target;
+    const { name, value, files } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: files ?files[0] : value,
-    }))
-};
+      [name]: files ? files : value,
+    }));
+  };
+  
 
-const handleSubmit = (e) =>{
-  e.preventDefault();
-
-
-}
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  
+    const formDataForCreate = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (key === "files" && formData[key]) {
+        Array.from(formData[key]).forEach((file) => {
+          formDataForCreate.append("files", file);
+        });
+      } else {
+        formDataForCreate.append(key, formData[key]);
+      }
+    });
+  
+    fetch("https://realauto.limsa.uz/api/cars", {
+      method: "POST",
+      body: formDataForCreate,
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.success) {
+          toast.success("Ma'lumot muvaffaqiyatli qo'shildi!");
+          setPost(false);
+          getCategory();
+        } else {
+          toast.error("Xatolik yuz berdi!");
+        }
+      })
+      .catch((error) => {
+        console.error("Xatolik:", error);
+        toast.error("Server bilan bog‘lanishda muammo yuz berdi!");
+      });
+  };
+  
   return (
     <div className="Cards">
       <div className="container">
@@ -129,7 +187,7 @@ const handleSubmit = (e) =>{
             
             <div className="Cards-parent">
 
-              <form className="Cards-form" >
+              <form className="Cards-form" onSubmit={handleSubmit}>
                    
                    <div className="edit" onClick={() => setPost(false)}>
                  <GoX/>
@@ -137,88 +195,91 @@ const handleSubmit = (e) =>{
 
                 <div className="label">
                   <label htmlFor="dswrgf">Color</label><br />
-                  <input type="text" placeholder="Color" />
+                      <input type="number" name="color" placeholder="Color" value={formData.color} onChange={handleChange}/>
                 </div>
                 <div className="label">
                   <label htmlFor="">Year</label><br />
-                  <input type="text" placeholder="Year" />
+                  <input type="text" name="year" placeholder="Year" value={formData.year}  onChange={handleChange} />
                 </div>
                 
                 <div className="label">
                   <label htmlFor="dswrgf">Seconds</label><br />
-                  <input type="text" placeholder="Seconds" />
+                  <input type="text" placeholder="Seconds" name="seconds" value={formData.seconds} onChange={handleChange} />
                 </div>
                 
                 <div className="label">
                   <label htmlFor="dswrgf">Max speed</label><br />
-                  <input type="text" placeholder="Max speed" />
+                  <input type="text" placeholder="Max speed" name="max_speed"  value={formData.max_speed} onChange={handleChange}/>
                 </div>
                 
                 <div className="label">
                   <label htmlFor="dswrgf">Max people</label><br />
-                  <input type="text" placeholder="Max people" />
+                  <input type="text" placeholder="Max people" name="max_people" value={formData.max_people} onChange={handleChange}/>
                 </div>
                 
                 <div className="label">
                   <label htmlFor="dswrgf">Transmission</label><br />
-                  <input type="text" placeholder="Transmission"/>
+                  <input type="text" placeholder="Transmission" name="transmission" value={formData.transmission}  onChange={handleChange}/>
                 </div>
                 
                 <div className="label">
                   <label htmlFor="dswrgf">Motor</label><br />
-                  <input type="text" placeholder="Motor"/>
+                  <input type="text" placeholder="Motor" name="motor" value={formData.motor}  onChange={handleChange}/>
                 </div>
                 
                 <div className="label">
                   <label htmlFor="dswrgf">Drive side</label><br />
-                  <input type="text" placeholder="Drive side" />
+                  <input type="text" placeholder="Drive side" name="drive_side" value={formData.drive_side} onChange={handleChange}/>
                 </div>
                 <div className="label">
                   <label htmlFor="dswrgf">Petrol</label><br />
-                  <input type="text" placeholder="Petrol"/>
+                  <input type="text" placeholder="Petrol" name="petrol" value={formData.petrol}  onChange={handleChange}/>
                 </div>
                 
                 <div className="label">
                   <label htmlFor="dswrgf">Limitperday</label><br />
-                  <input type="text" placeholder="Limitperday"/>
+                  <input type="text" placeholder="Limitperday" name="limitperday" value={formData.limitperday} onChange={handleChange} />
                 </div>
                 
                 <div className="label">
                   <label htmlFor="dswrgf">Premium protection</label><br />
-                  <input type="text" placeholder="Premium protection" />
+                  <input type="text" placeholder="Premium protection" name="premium_protection" value={formData.premium_protection} onChange={handleChange} />
                 </div>
                 <div className="label">
                   <label htmlFor="dswrgf">Price in AED</label><br />
-                  <input type="text" placeholder="Price in AED" />
+                  <input type="text" placeholder="Price in AED" name="price_in_aed" value={formData.price_in_aed} onChange={handleChange} />
                 </div>
                 <div className="label">
                   <label htmlFor="dswrgf">Price in USD</label><br />
-                  <input type="text" placeholder="Price in USD" />
+                  <input type="text" placeholder="Price in USD" name="price_in_usd" value={formData.price_in_usd} onChange={handleChange}/>
                 </div>
                 <div className="label">
                   <label htmlFor="dswrgf">Price in AED sale</label><br />
-                  <input type="text" placeholder="Price in USD" />
+                  <input type="text" placeholder="Price in USD" name="price_in_aed_sale" value={formData.price_in_aed_sale} onChange={handleChange}/>
                 </div>
                 <div className="label">
                   <label htmlFor="dswrgf">Price in USD sale</label><br />
-                  <input type="text" placeholder="Price in USD sale" />
+                  <input type="text" placeholder="Price in USD sale" name="price_in_usd_sale" value={formData.price_in_usd_sale} onChange={handleChange} />
                 </div>
 
 
 
                <div className="label">
                   <label htmlFor="dswrgf">Cover</label><br />
-                  <input type="file" placeholder="Price in USD sale" />
+                  <input type="file" name="files" onChange={handleChange} />
+
                 </div>
 
                 <div className="label">
-                  <label htmlFor="dswrgf">Price in USD sale</label><br />
-                  <input type="file" placeholder="Price in USD sale" />
+                  <label htmlFor="dswrgf">images 1</label><br />
+                  <input type="file" name="files" onChange={handleChange} />
+
                 </div>
 
                 <div className="label">
-                  <label htmlFor="dswrgf">Price in USD sale</label><br />
-                  <input type="file" placeholder="Price in USD sale" />
+                  <label htmlFor="dswrgf">images 2</label><br />
+                  <input type="file" name="files" onChange={handleChange} />
+
                 </div>
 
              

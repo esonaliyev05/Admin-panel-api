@@ -12,6 +12,8 @@ import Cities from "../Cities/Cities";
 import Locations from "../Locations/Locations";
 import Models from "../Models/Models";
 import { HiMiniBars3 } from "react-icons/hi2";
+import { GoArrowLeft } from "react-icons/go";
+import { HiMiniBars3BottomLeft } from "react-icons/hi2";
 
 const Home = () => {
   const [user, setUser] = useState(false);
@@ -21,6 +23,7 @@ const Home = () => {
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [categoryToEdit, setCategoryToEdit] = useState(null);
   const [activeComponent, setActiveComponent] = useState("A");
+  const [open , setOpen] = useState(false);
 
   const navigate = useNavigate();
   const logoutFunction = () => {
@@ -193,8 +196,12 @@ const Home = () => {
         ``
         {/* Sidebar */}
         {/* Sidebar */}
-        <aside className="sidebar">
-          <div className="sidebar-header">Admin Panel</div>
+        <aside className={open ? "sidebar activ" : "sidebar"}>
+   
+          <div className="sidebar-header">Admin Panel      <div className="icon">
+            <GoArrowLeft onClick={() => setOpen(false)}/>
+          </div></div>
+      
           <ul className="menu">
             <li
               className={activeComponent === "A" ? "active" : ""}
@@ -235,10 +242,11 @@ const Home = () => {
             <li onClick={logoutFunction}>Logout</li>
           </ul>
         </aside>
+
         <main className="main-content">
           <header className="navbar">
             <div className="search-bar">
-              <div className="bars">{/* <HiMiniBars3/> */}</div>
+              <div className="bars" onClick={() => setOpen(true)}><HiMiniBars3BottomLeft/></div>
               <input
                 type="search"
                 className="search-input"
