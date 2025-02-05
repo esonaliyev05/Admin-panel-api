@@ -71,9 +71,10 @@ const Login = () => {
           type="tel" // phone uchun "tel" turi
           placeholder="Phone Number"
           required
+          
         />
         <input
-          onChange={(e) => setParol(e.target.value)}
+          onChange={(e) => setParol(e.target.value.toLocaleLowerCase())}
           value={parol}
           type="password"
           placeholder="Password"

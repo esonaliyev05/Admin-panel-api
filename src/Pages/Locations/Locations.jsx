@@ -9,13 +9,16 @@ const Locations = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [post, setPost] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [name, setName] = useState("");
-  const [text, setText] = useState("");
-  const [picture, setPicture] = useState(null);
-  const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    text: "",
+    file: null,
+  });
   const [locationToEdit, setLocationToEdit] = useState(null);
+  const tokenbek = localStorage.getItem("token");
 
-  function getCategory() {
+  // Kategoriyalarni olish
+  const getCategory = () => {
     setIsLoading(true);
     fetch("https://realauto.limsa.uz/api/locations")
       .then((res) => res.json())
@@ -30,88 +33,87 @@ const Locations = () => {
       })
       .catch((error) => {
         toast.error("Error fetching data");
-        console.log(error);
         setIsLoading(false);
       });
-  }
+  };
 
+  // Componentni yuklaganda
   useEffect(() => {
     getCategory();
   }, []);
 
-  const tokenbek = localStorage.getItem("token");
-
-  const createCategory = (e) => {
-    e.preventDefault();
-
-    if (!tokenbek) {
-      toast.error("Token is missing!");
-      return;
-    }
-
-    if (!name || !text || !picture) {
-      toast.error("Please fill all fields");
-      return;
-    }
-
-    const formdata = new FormData();
-    formdata.append("text", text);
-    formdata.append("name", name);
-    formdata.append("images", picture);
-
-    fetch("https://realauto.limsa.uz/api/locations", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${tokenbek}`,
-      },
-      body: formdata,
-    })
-      .then((res) => res.json())
-      .then((elem) => {
-        if (elem?.success) {
-          toast.success(elem?.massage);
-          toast.success("Mufaqiyatli qo'shildi")
-          getCategory();
-          e.target.reset();
-          setPost(false);
-        } else {
-          toast.error(elem?.massage || "Unknown error");
-        }
-      })
-      .catch((err) => {
-        toast.error("Error creating category");
-        console.log(err);
-      });
+  // Tahrir qilishni boshlash
+  const handleEdit = (item) => {
+    setFormData({
+      name: item.name,
+      text: item.text,
+      file: null, // eski faylni ko'rsatmaslik
+    });
+    setLocationToEdit(item.id);
+    setEdit(true);  // Modalni ochish
   };
 
-  const [formData, setFormData] = useState({
-    name: "",
-    text: "",
-    file: null,
-  });
-
+  // Inputlarni yangilash
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: files ? files[0] : value,
     }));
   };
 
+  // Tahrirni yuborish
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+
+  //   if (!formData.name || !formData.text || !formData.file) {
+  //     toast.error("Iltimos, barcha maydonlarni to'ldiring");
+  //     return;
+  //   }
+
+  //   const formDataForEdit = new FormData();
+  //   formDataForEdit.append("name", formData.name);
+  //   formDataForEdit.append("text", formData.text);
+  //   formDataForEdit.append("images", formData.file);
+
+  //   fetch(`https://realauto.limsa.uz/api/locations/${locationToEdit}`, {
+  //     method: "PUT",
+  //     headers: {
+  //       Authorization: `Bearer ${tokenbek}`,
+  //     },
+  //     body: formDataForEdit,
+  //   })
+  //     .then((res) => res.json())
+  //     .then((response) => {
+  //       if (response?.success) {
+  //         toast.success("Malumot muvaffaqiyatli yangilandi");
+  //         getCategory();
+  //         setEdit(false); // Modalni yopish
+  //       } else {
+  //         toast.error(response?.massage || "Xatolik");
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       toast.error("Error updating category");
+  //       console.log(err);
+  //     });
+  // };
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!formData.name || !formData.text || !formData.file) {
-      toast.error("Please fill all fields");
+  
+    if (!formData.name && !formData.text && !formData.file) {
+      toast.error("Iltimos, biron bir maydonni to'ldiring");
       return;
     }
-
+  
+    // Yangi FormData yaratamiz va faqat o'zgargan maydonlarni qo'shamiz
     const formDataForEdit = new FormData();
-    formDataForEdit.append("name", formData.name);
-    formDataForEdit.append("text", formData.text);
-    formDataForEdit.append("images", formData.file);
-
+  
+    // Har bir maydonni tekshirib, agar u o'zgargan bo'lsa, yuboramiz
+    if (formData.name) formDataForEdit.append("name", formData.name);
+    if (formData.text) formDataForEdit.append("text", formData.text);
+    if (formData.file) formDataForEdit.append("images", formData.file);
+  
     const token = localStorage.getItem("token");
     fetch(`https://realauto.limsa.uz/api/locations/${locationToEdit}`, {
       method: "PUT",
@@ -123,11 +125,11 @@ const Locations = () => {
       .then((res) => res.json())
       .then((response) => {
         if (response?.success) {
-          toast.success(response?.massage);
-          getCategory();
-          setEdit(false);
+          toast.success("Malumot muvaffaqiyatli yangilandi");
+          getCategory();  // Ma'lumotlarni yangilash
+          setEdit(false);  // Modalni yopish
         } else {
-          toast.error(response?.massage || "Unknown error");
+          toast.error(response?.message || "Xatolik");
         }
       })
       .catch((err) => {
@@ -135,34 +137,76 @@ const Locations = () => {
         console.log(err);
       });
   };
+  
 
+  // Kategoriyani o'chirish
   const deleteCategory = (locationId) => {
-     if(!tokenbek) {
+    if (!tokenbek) {
       toast.error("Token is missing");
       return;
-     }
-     fetch(`https://realauto.limsa.uz/api/locations/${locationId}` , {
+    }
+    fetch(`https://realauto.limsa.uz/api/locations/${locationId}`, {
       method: "DELETE",
-       headers: {
+      headers: {
         Authorization: `Bearer ${tokenbek}`,
-       },
-     })
-     .then((res) => res.json())
-     .then((response) => {
-      if(response?.success) {
-        toast.success(response?.massage);
-        toast.success("Ochirildi")
-        getCategory()
-        setData(false);
-      }else {
-        toast.error(response?.massage || "Unknown error");
-      }
-     })
-     .catch((err) => {
-      toast.error("Error deleting category");
-      console.error(err)
-     })
-  }
+      },
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response?.success) {
+          toast.success("Ochirildi");
+          getCategory();
+        } else {
+          toast.error(response?.massage || "Unknown error");
+        }
+      })
+      .catch((err) => {
+        toast.error("Error deleting category");
+        console.error(err);
+      });
+  };
+
+  // Malumot qo'shish
+  const createCategory = (e) => {
+    e.preventDefault();
+
+    if (!tokenbek) {
+      toast.error("Token is missing!");
+      return;
+    }
+
+    if (!formData.name || !formData.text || !formData.file) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    const formdata = new FormData();
+    formdata.append("text", formData.text);
+    formdata.append("name", formData.name);
+    formdata.append("images", formData.file);
+
+    fetch("https://realauto.limsa.uz/api/locations", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${tokenbek}`,
+      },
+      body: formdata,
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response?.success) {
+          toast.success(response?.massage);
+          getCategory();
+          setPost(false);
+        } else {
+          toast.error(response?.massage || "Unknown error");
+        }
+      })
+      .catch((err) => {
+        toast.error("Error creating category");
+        console.log(err);
+      });
+  };
 
   return (
     <div className="Locations">
@@ -192,39 +236,35 @@ const Locations = () => {
                 </tr>
               </thead>
               <tbody className="data-count-get">
-                {Array.isArray(data) &&
-                  data.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item?.name}</td>
-                      <td>
-                        <img
-                          src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
-                          alt=""
-                        />
-                      </td>
-                      <td>{item?.text}</td>
-                      <td>
-                      <button onClick={() => deleteCategory(item.id)}>Delete</button>
-
-                      </td>
-                      <td>
-                        <button
-                          onClick={() => {
-                            setEdit(true);
-                            setLocationToEdit(item?.id);
-                          }}
-                        >
-                          Edit
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                {data.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.name}</td>
+                    <td>
+                      <img
+                        src={`https://realauto.limsa.uz/api/uploads/images/${item.image_src}`}
+                        alt=""
+                      />
+                    </td>
+                    <td>{item.text}</td>
+                    <td>
+                      <button onClick={() => deleteCategory(item.id)}>
+                        Delete
+                      </button>
+                    </td>
+                    <td>
+                      <button onClick={() => handleEdit(item)}>
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           )}
         </div>
       </div>
 
+      {/* Malumot qo'shish Modal */}
       <div className={post ? "Location-main activ" : "Location-main"}>
         <div className="main-parent">
           <form onSubmit={createCategory} className="Location-form">
@@ -234,31 +274,28 @@ const Locations = () => {
             <input
               type="text"
               name="name"
-              required
-              minLength={3}
+              value={formData.name}
+              onChange={handleChange}
               placeholder="Name"
-              onChange={(e) => setName(e.target.value)}
             />
             <input
               type="text"
               name="text"
-              required
-              minLength={3}
+              value={formData.text}
+              onChange={handleChange}
               placeholder="Text"
-              onChange={(e) => setText(e.target.value)}
             />
             <input
               type="file"
               name="file"
-              required
-              onChange={(e) => setPicture(e.target.files[0])}
+              onChange={handleChange}
             />
             <button type="submit">Submit</button>
           </form>
         </div>
       </div>
 
-
+      {/* Tahrir qilish Modal */}
       <div className={edit ? "Location-edit activ" : "Location-edit"}>
         <div className="main-parent">
           <form onSubmit={handleSubmit} className="Location-form">
@@ -268,29 +305,26 @@ const Locations = () => {
             <input
               type="text"
               name="name"
-              required
-              minLength={3}
-              placeholder="Name"
               value={formData.name}
               onChange={handleChange}
-
+              placeholder="Name"
             />
             <input
               type="text"
               name="text"
-              required
-              minLength={3}
-              placeholder="Text"
               value={formData.text}
               onChange={handleChange}
-
+              placeholder="Text"
             />
-            <input type="file" name="file" required onChange={handleChange} />
-            <button type="submit">Submit</button>
+            <input
+              type="file"
+              name="file"
+              onChange={handleChange}
+            />
+            <button type="submit">Save</button>
           </form>
         </div>
       </div>
-
     </div>
   );
 };

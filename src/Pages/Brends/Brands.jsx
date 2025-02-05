@@ -157,7 +157,7 @@ const Brands = () => {
           <div className="card">
             Malumot qo'shish <br /> <br />
             <button onClick={() => setPush(!pushopen)}>
-              <IoPushOutline /> PUSH
+              <IoPushOutline /> Qo'shish
             </button>
           </div>
         </section>

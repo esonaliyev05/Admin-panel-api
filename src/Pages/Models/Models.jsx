@@ -11,40 +11,35 @@ const Models = () => {
   const [post, setPost] = useState(false);
   const [formData, setFormData] = useState({
     brand_id: "",
-    file: null,
     name: "",
   });
 
-  const [cityId, setCityId] = useState(null);
   const token = localStorage.getItem("token");
 
-  function getCategory() {
-    setIsLoading(true); // ✅ API so‘rov boshlanishida loaderni yoqish
+  const getCategory = () => {
+    setIsLoading(true);
     fetch("https://realauto.limsa.uz/api/models")
       .then((res) => res.json())
       .then((response) => {
         setData(response?.data);
-        setIsLoading(false); //
+        setIsLoading(false);
       })
       .catch((error) => {
         toast.error("Error fetching data");
         console.log(error);
-        setIsLoading(false); // ✅ Xato bo‘lsa ham loaderni o‘chirish
+        setIsLoading(false);
       });
-  }
+  };
 
   useEffect(() => {
     getCategory();
   }, []);
 
   const handleChange = (e) => {
-    console.log(e);
-
-    const { name, value, files } = e.target;
-
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: files ? files[0] : value,
+      [name]: value,
     }));
   };
 
@@ -52,62 +47,104 @@ const Models = () => {
     e.preventDefault();
 
     if (!formData.name || !formData.brand_id) {
-      toast.error("Please fill all fields, including the image!");
+      toast.error("Please fill all fields!");
+      return;
+    }
+
+    if (!token) {
+      toast.error("Token not found. Please login.");
       return;
     }
 
     const formDataForSubmit = new FormData();
-
     formDataForSubmit.append("name", formData.name);
     formDataForSubmit.append("brand_id", formData.brand_id);
-     
-    setIsLoading(true)
+
+    setIsLoading(true);
 
     fetch("https://realauto.limsa.uz/api/models", {
       method: "POST",
-
       headers: {
         Authorization: `Bearer ${token}`,
       },
       body: formDataForSubmit,
     })
-     .then((res) => res.json())
-     .then((elem) => {
-      if (elem?.succsess) {
-        toast.success(elem?.message);
-        setFormData({name: "" , brand_id: ""});
-        getCategory();
-        setPost(false);
-      }else {
-        toast.error(elem?.message || "Unknown error");
-      }
-     })
-     .catch((err) => {
-      toast.error("Error creating city");
-      console.error(err)
-     })
-      .finally(() => {
-        setIsLoading(false)
+      .then((res) => res.json())
+      .then((elem) => {
+        if (elem?.success) {
+          toast.success(elem?.message);
+          setFormData({ name: "", brand_id: "" });
+          getCategory();
+          setPost(false);
+        } else {
+          toast.error(elem?.message || "Unknown error");
+        }
       })
-
+      .catch((err) => {
+        toast.error("Error creating model");
+        console.error(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const handleEdit = (item) => {
     setFormData({
       name: item.name,
-      brand_id: item.brand_id
-
+      brand_id: item.brand_id,
     });
-    setEdit(true)
-  }
+    setEdit(true);
+  };
 
+  const handleUpdate = (e) => {
+    e.preventDefault();
+
+    if (!formData.name || !formData.brand_id) {
+      toast.error("Please fill all fields!");
+      return;
+    }
+
+    if (!token) {
+      toast.error("Token not found. Please login.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    fetch(`https://realauto.limsa.uz/api/models/${formData.id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response?.success) {
+          toast.success("Model updated successfully!");
+          getCategory();
+          setEdit(false);
+        } else {
+          toast.error(response?.message || "Unknown error");
+        }
+      })
+      .catch((err) => {
+        toast.error("Error updating model");
+        console.error(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   return (
     <div className="Models">
       <div className="container">
         <section className="dashboard">
           <div className="card">
-            Malumot qo'shish <br /> <br />
+            Ma'lumot qo'shish <br /> <br />
             <button onClick={() => setPost(true)}>
               <IoPushOutline /> PUSH
             </button>
@@ -125,8 +162,8 @@ const Models = () => {
                 <tr>
                   <th>Brend-Name</th>
                   <th>Brand-logo</th>
-                  <th>delet</th>
-                  <th>edit</th>
+                  <th>O'chirish</th>
+                  <th>Tahrirlash</th>
                 </tr>
               </thead>
               <tbody className="data-count-get">
@@ -135,18 +172,19 @@ const Models = () => {
                     <tr key={index}>
                       <td>{item?.name}</td>
                       <td>{item?.brand_id}</td>
-
                       <td>
-                        <button onClick={() => setPost(true)}>delet</button>
+                        <button>O'chirish</button>
                       </td>
-                      <th>
-                        <button onClick={() => setEdit(true)}>edit</button>
-                      </th>
+                      <td>
+                        <button onClick={() => handleEdit(item)}>
+                          Tahrirlash
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5">Hech qanday ma'lumot topilmadi</td>
+                    <td colSpan="4">Hech qanday ma'lumot topilmadi</td>
                   </tr>
                 )}
               </tbody>
@@ -155,71 +193,87 @@ const Models = () => {
         </div>
       </div>
 
-      <div className={post ? "Models-post activ" : "Models-post"}>
-        <div className="main-parent">
-          <form className="home-form" onSubmit={handleSubmit}>
-            <div className="qut-edit" onClick={() => setPost(false)}>
-              X
-            </div>
+      {post && (
+        <div className="Models-post activ">
+          <div className="main-parent">
+            <form className="home-form" onSubmit={handleSubmit}>
+              <div className="qut-edit" onClick={() => setPost(false)}>
+                X
+              </div>
 
-            <input
-              type="text"
-              name="name"
-              required
-              minLength={3}
-              placeholder="Name"
-              value={formData.name}
-              onChange={handleChange}
+              <input
+                type="text"
+                name="name"
+                required
+                minLength={3}
+                placeholder="Name"
+                value={formData.name}
+                onChange={handleChange}
+              />
 
-            />
-            <input
-              type="text"
-              name="brand_id"
-              required
-              minLength={3}
-              placeholder="Bread_id"
-              value={formData.brand_id}
-              
-            />
-            <button type="submit">
-              Update
-            </button>
-          </form>
+              <select
+                name="brand_id"
+                value={formData.brand_id}
+                onChange={handleChange}
+                required
+                style={{ width: "100%", height: "40px", outline: "none" }}
+              >
+                <option value="">Tanlang...</option>
+                <option value="BMW">BMW</option>
+                <option value="MERS">MERS</option>
+                <option value="BMW-M5">BMW-M5</option>
+                <option value="BMW-X5">BMW-X5</option>
+                <option value="AUDI">AUDI</option>
+                <option value="FERRARI">FERRARI</option>
+              </select>
+
+              <button type="submit">Qo'shish</button>
+            </form>
+          </div>
         </div>
-      </div>
-      <div className={edit ? "Modles-edit activ" : "Modles-edit"}>
-        <div className="main-parent">
-          <form className="home-form">
-            <div className="qut-edit" onClick={() => setEdit(false)}>
-              X
-            </div>
+      )}
 
-            <input
-              type="text"
-              name="nameEn"
-              required
-              minLength={3}
-              placeholder="Name (EN)"
+      {edit && (
+        <div className="Models-edit activ">
+          <div className="main-parent">
+            <form className="home-form" onSubmit={handleUpdate}>
+              <div className="qut-edit" onClick={() => setEdit(false)}>
+                X
+              </div>
 
-            />
-            <input
-              type="text"
-              name="nameRu"
-              required
-              minLength={3}
-              placeholder="Name (RU)"
+              <input
+                type="text"
+                name="name"
+                required
+                minLength={3}
+                placeholder="Name"
+                value={formData.name}
+                onChange={handleChange}
+              />
 
-            />
-            <input type="file" name="file" required />
-            <button type="submit" onClick={() => setEdit(false)}>
-              Update
-            </button>
-          </form>
+              <select
+                name="brand_id"
+                value={formData.brand_id}
+                onChange={handleChange}
+                required
+                style={{ width: "100%", height: "40px", outline: "none" }}
+              >
+                <option value="">Tanlang...</option>
+                <option value="BMW">BMW</option>
+                <option value="MERS">MERS</option>
+                <option value="BMW-M5">BMW-M5</option>
+                <option value="BMW-X5">BMW-X5</option>
+                <option value="AUDI">AUDI</option>
+                <option value="FERRARI">FERRARI</option>
+              </select>
+
+              <button type="submit">Yangilash</button>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
-
 
 export default Models;
