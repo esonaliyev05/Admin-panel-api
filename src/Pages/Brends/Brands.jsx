@@ -190,9 +190,12 @@ const Brands = () => {
                         />
                       </td>
                       <td>
-                        <button onClick={() => deleteCategory(item.id)}>
-                          Delete
-                        </button>
+                      <button 
+    onClick={() => deleteCategory(item.id)}
+    disabled={isLoading} // Disable button while loading
+  >
+    O'chirish
+  </button>
                       </td>
                       <th>
                         <button onClick={() => handleEdit(item.id, item.title)}>
@@ -220,7 +223,7 @@ const Brands = () => {
                 X
               </div>
 
-              <select
+              {/* <select
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
@@ -234,7 +237,11 @@ const Brands = () => {
                 <option value="BMW-X5">BMW-X5</option>
                 <option value="AUDI">AUDI</option>
                 <option value="FERRARI">FERRARI</option>
-              </select>
+              </select> */}
+              <input type="text"    name="title"
+                value={formData.title}
+                onChange={handleChange}
+                required />
 
               <input
                 type="file"
@@ -257,7 +264,7 @@ const Brands = () => {
               <div className="qut-edit" onClick={() => setEdit(false)}>
                 X
               </div>
-
+{/* 
               <select
                 name="title"
                 value={formData.title}
@@ -272,7 +279,11 @@ const Brands = () => {
                 <option value="BMW-X5">BMW-X5</option>
                 <option value="AUDI">AUDI</option>
                 <option value="FERRARI">FERRARI</option>
-              </select>
+              </select> */}
+              <input type="text"   name="title"
+                value={formData.title}
+                onChange={handleChange}
+                required />
 
               <input
                 type="file"

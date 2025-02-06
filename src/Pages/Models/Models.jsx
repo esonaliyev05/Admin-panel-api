@@ -10,6 +10,7 @@ const Models = () => {
   const [edit, setEdit] = useState(false);
   const [post, setPost] = useState(false);
   const [formData, setFormData] = useState({
+    id: "",
     brand_id: "",
     name: "",
   });
@@ -45,29 +46,29 @@ const Models = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (!formData.name || !formData.brand_id) {
       toast.error("Please fill all fields!");
       return;
     }
-
+  
     if (!token) {
       toast.error("Token not found. Please login.");
       return;
     }
-
+  
+    setIsLoading(true); // Set loading to true
+  
     const formDataForSubmit = new FormData();
     formDataForSubmit.append("name", formData.name);
     formDataForSubmit.append("brand_id", formData.brand_id);
-
-    setIsLoading(true);
-
+  
     fetch("https://realauto.limsa.uz/api/models", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      body: formDataForSubmit,
+      body: formDataForSubmit, // Make sure you use FormData here, not JSON.stringify
     })
       .then((res) => res.json())
       .then((elem) => {
@@ -85,12 +86,14 @@ const Models = () => {
         console.error(err);
       })
       .finally(() => {
-        setIsLoading(false);
+        setIsLoading(false); // Stop loading after the operation completes
       });
   };
+  
 
   const handleEdit = (item) => {
     setFormData({
+      id: item.id, // Ensure the model ID is set
       name: item.name,
       brand_id: item.brand_id,
     });
@@ -138,6 +141,40 @@ const Models = () => {
         setIsLoading(false);
       });
   };
+ 
+  const deleteCategory = (id) => {
+    if (!token) {
+      toast.error("Token is missing");
+      return;
+    }
+  
+    setIsLoading(true); // Start loading when deleting
+  
+    fetch(`https://realauto.limsa.uz/api/models/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response?.success) {
+          toast.success(response?.message);
+          getCategory(); // Refresh the category list
+        } else {
+          toast.error(response?.message || "Unknown error");
+        }
+      })
+      .catch((err) => {
+        toast.error("Error deleting category");
+        console.error(err);
+      })
+      .finally(() => {
+        setIsLoading(false); // Stop loading after the operation completes
+      });
+  };
+  
+  
 
   return (
     <div className="Models">
@@ -173,7 +210,7 @@ const Models = () => {
                       <td>{item?.name}</td>
                       <td>{item?.brand_id}</td>
                       <td>
-                        <button>O'chirish</button>
+                        <button onClick={() => deleteCategory(item.id) }>O'chirish</button>
                       </td>
                       <td>
                         <button onClick={() => handleEdit(item)}>
@@ -219,12 +256,11 @@ const Models = () => {
                 style={{ width: "100%", height: "40px", outline: "none" }}
               >
                 <option value="">Tanlang...</option>
-                <option value="BMW">BMW</option>
-                <option value="MERS">MERS</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
+                {data.map((item) => (
+                  <option key={item.id} value={item.brand_id}>
+                    {item.name}
+                  </option>
+                ))}
               </select>
 
               <button type="submit">Qo'shish</button>
@@ -259,12 +295,11 @@ const Models = () => {
                 style={{ width: "100%", height: "40px", outline: "none" }}
               >
                 <option value="">Tanlang...</option>
-                <option value="BMW">BMW</option>
-                <option value="MERS">MERS</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
+                {data.map((item) => (
+                  <option key={item.id} value={item.brand_id}>
+                    {item.name}
+                  </option>
+                ))}
               </select>
 
               <button type="submit">Yangilash</button>
