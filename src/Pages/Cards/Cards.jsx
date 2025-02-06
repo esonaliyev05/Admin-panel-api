@@ -7,6 +7,12 @@ import { GoX } from "react-icons/go";
 
 const Cards = () => {
   const [data, setData] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [categories , setCategories] = useState([])
+  const [cities , setCities] = useState([])
+  const [locations , setLocations] = useState([])
+  const [models , setModels] = useState([])
+
   const [isLoading, setIsLoading] = useState(true);
   const [edit, setEdit] = useState(false);
   const [post, setPost] = useState(false);
@@ -51,23 +57,88 @@ const Cards = () => {
         console.log(error);
         setIsLoading(false);
       });
+  
+  fetch("https://realauto.limsa.uz/api/brands")
+      .then((res) => res.json())
+      .then((response) => {
+        setBrands(response?.data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        toast.error("Error fetching data");
+        console.log(error);
+        setIsLoading(false);
+      });
+  
+  fetch("https://realauto.limsa.uz/api/categories")
+  .then((res) => res.json())
+  .then((response) => {
+    setCategories(response?.data);
+    setIsLoading(false);
+  })
+  .catch((error) => {
+    toast.error("Error fetching data");
+    console.log(error);
+    setIsLoading(false);
+  });
+
+  fetch("https://realauto.limsa.uz/api/cities")
+  .then((res) => res.json())
+  .then((response) => {
+    setCities(response?.data);
+    setIsLoading(false);
+  })
+  .catch((error) => {
+    toast.error("Error fetching data");
+    console.log(error);
+    setIsLoading(false);
+  });
+
+  fetch("https://realauto.limsa.uz/api/locations")
+  .then((res) => res.json())
+  .then((response) => {
+    setLocations(response?.data);
+    setIsLoading(false);
+  })
+  .catch((error) => {
+    toast.error("Error fetching data");
+    console.log(error);
+    setIsLoading(false);
+  });
+
+  fetch("https://realauto.limsa.uz/api/models")
+  .then((res) => res.json())
+  .then((response) => {
+    setModels(response?.data);
+    setIsLoading(false);
+  })
+  .catch((error) => {
+    toast.error("Error fetching data");
+    console.log(error);
+    setIsLoading(false);
+  });
+
   }
 
+  
   useEffect(() => {
     let isMounted = true;
     getCategory();
-  
+    
     return () => {
       isMounted = false;
     };
   }, []);
   
+  console.log(brands);
+  console.log(categories);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: files ? files : value,
+
     }));
   };
   
@@ -290,63 +361,73 @@ const Cards = () => {
           <div className="label">
                   <label htmlFor="">Brand title</label> <br />
                   <select>
-            
-                <option value="MERS">MERS</option>
-                <option value="BMW">BMW</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
+                       
+                       {brands.map((item) => (
+                         <option key={item.id} value={item.model_id}>
+                          {item.title}
+                         </option>  
+                        ))
+                       }
+                  
                   </select>
                 </div>
-                <div className="label">
-                  <label htmlFor="">Brand title</label> <br />
-                  <select>
-            
-                <option value="MERS">MERS</option>
-                <option value="BMW">BMW</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
-                  </select>
-                </div>
-                <div className="label">
-                  <label htmlFor="">Brand title</label> <br />
-                  <select>
-            
-                <option value="MERS">MERS</option>
-                <option value="BMW">BMW</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
-                  </select>
-                </div>
-
-
                 <div className="label">
                   <label htmlFor="">Model title</label> <br />
                   <select>
-            
-                <option value="MERS">MERS</option>
-                <option value="BMW">BMW</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
+
+                   {models.map((item) => (
+                    <option key={item.id} value={item.model_id}>
+                      {item.name}
+
+                    </option>
+                   ))
+
+                   }      
+      
                   </select>
                 </div>
                 <div className="label">
-                  <label htmlFor="">Brand title</label> <br />
+                  <label htmlFor="">Citiy id</label> <br />
+                  <select>
+                          {cities.map((item) => (
+                            <option key={item.id} value={item.city_id}>
+                               {item.name}
+                            </option>
+                          ))
+
+                          }
+                  </select>
+                </div>
+
+
+                <div className="label">
+                  <label htmlFor="">Category title</label> <br />
+                  <select>
+                    
+                    {categories.map((item) => (
+                      <option key={item.id} value={item.category_id}>
+                        {item.name_en}
+
+                      </option>
+                    ))
+
+                    }
+                                  
+                  </select>
+                </div>
+                <div className="label">
+                  <label htmlFor="">Location title</label> <br />
                   <select>
             
-                <option value="MERS">MERS</option>
-                <option value="BMW">BMW</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
+               {locations.map((item) => {
+                <option key={item.id} value={item.location_id}>
+                  {item.name}
+
+                </option>
+               })
+
+               }
+              
                   </select>
                 </div>
                 
