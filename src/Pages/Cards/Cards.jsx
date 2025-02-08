@@ -17,6 +17,7 @@ const Cards = () => {
   const [edit, setEdit] = useState(false);
   const [post, setPost] = useState(false);
   const [delet, setDelet] = useState(false);
+  const tokenbek = localStorage.getItem("token");
   const [formData, setFormData] = useState({
     brand_id: "",
     model_id: "",
@@ -42,8 +43,8 @@ const Cards = () => {
     location_id: "",
     inclusive: "",
     cover: "",
-    
   });
+  console.log(tokenbek);
 
   function getCategory() {
     setIsLoading(true);
@@ -133,10 +134,11 @@ const Cards = () => {
   console.log(categories);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value, type, files } = e.target;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: files ? files : value,
+      [name]: type === "file" ? files : value,
     }));
   };
 
@@ -156,6 +158,9 @@ const Cards = () => {
 
     fetch("https://realauto.limsa.uz/api/cars", {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${tokenbek}`,
+      },
       body: formDataForCreate,
     })
       .then((res) => res.json())
@@ -181,7 +186,6 @@ const Cards = () => {
           <div className="card">
             Malumot qo'shish <br /> <br />
             <button onClick={() => setPost(true)}>
-              {" "}
               <IoPushOutline /> PUSH
             </button>
           </div>
@@ -213,7 +217,7 @@ const Cards = () => {
                       <td>{item?.motor}</td>
                       <td>{item?.drive_side}</td>
                       <td>{item?.petrol}</td>
-                      <td>{item?.limitperday}</td>
+                      {/* <td>{item?.limitperday}</td>
                       <td>{item?.deposit}</td>
                       <td>{item?.premium_protection}</td>
                       <td>{item?.price_in_aed}</td>
@@ -223,7 +227,7 @@ const Cards = () => {
                       <td>{item?.location_id}</td>
                       <td>{item?.color}</td>
                       <td>{item?.year}</td>
-                      <td>{item?.seconds}</td>
+                      <td>{item?.seconds}</td> */}
                       <td>
                         <img
                           src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
@@ -266,7 +270,7 @@ const Cards = () => {
                 type="number"
                 name="color"
                 placeholder="Color"
-                value={formData.color}
+                value={FormDataEvent.color}
                 onChange={handleChange}
               />
             </div>
@@ -377,8 +381,6 @@ const Cards = () => {
               />
             </div>
 
-           
-
             <div className="label">
               <label htmlFor="dswrgf">Premium protection</label>
               <br />
@@ -457,29 +459,30 @@ const Cards = () => {
 
             <div className="label">
               <label htmlFor="">Brand title</label> <br />
-              <select>
+              <select
+                name="brand_id"
+                value={formData.brand_id}
+                onChange={handleChange}
+              >
+                <option value="">Select Brand</option>
                 {brands.map((item) => (
-                  <option key={item.id} value={item.model_id}>
+                  <option key={item.id} value={item.id}>
                     {item.title}
                   </option>
                 ))}
               </select>
             </div>
+
             <div className="label">
               <label htmlFor="">Model title</label> <br />
-              <select>
+              <select
+                name="model_id"
+                value={formData.model_id}
+                onChange={handleChange}
+              >
+                <option value="">Select Model</option>
                 {models.map((item) => (
-                  <option key={item.id} value={item.model_id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="label">
-              <label htmlFor="">Citiy id</label> <br />
-              <select>
-                {cities.map((item) => (
-                  <option key={item.id} value={item.city_id}>
+                  <option key={item.id} value={item.id}>
                     {item.name}
                   </option>
                 ))}
@@ -487,31 +490,58 @@ const Cards = () => {
             </div>
 
             <div className="label">
-              <label htmlFor="">Category title</label> <br />
-              <select>
+              <label htmlFor="">City</label> <br />
+              <select
+                name="city_id"
+                value={formData.city_id}
+                onChange={handleChange}
+              >
+                <option value="">Select City</option>
+                {cities.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="label">
+              <label htmlFor="">Category</label> <br />
+              <select
+                name="category_id"
+                value={formData.category_id}
+                onChange={handleChange}
+              >
+                <option value="">Select Category</option>
                 {categories.map((item) => (
-                  <option key={item.id} value={item.category_id}>
+                  <option key={item.id} value={item.id}>
                     {item.name_en}
                   </option>
                 ))}
               </select>
             </div>
-            <div className="label">
-              <label htmlFor="">Location title</label> <br />
-              <select>
-  {locations.map((item) => (
-    <option key={item.id} value={item.location_id}>
-      {item.text}
-    </option>
-  ))}
-</select>
 
+            <div className="label">
+              <label htmlFor="">Location</label> <br />
+              <select
+                name="location_id"
+                value={formData.location_id}
+                onChange={handleChange}
+              >
+                <option value="">Select Location</option>
+                {locations.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.text}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <button type="submit">Submit</button>
           </form>
         </div>
       </div>
+
       <div className={edit ? "Cards-edit activ" : "Cards-edit"}>
         <div className="Cards-parent">
           <form className="Cards-form">
@@ -626,57 +656,52 @@ const Cards = () => {
             <div className="label">
               <label htmlFor="">Brand title</label> <br />
               <select>
-                <option value="MERS">MERS</option>
-                <option value="BMW">BMW</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
+                {brands.map((item) => (
+                  <option key={item.id} value={item.model_id}>
+                    {item.title}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="label">
-              <label htmlFor="">Brand title</label> <br />
+              <label htmlFor="">Model title</label> <br />
               <select>
-                <option value="MERS">MERS</option>
-                <option value="BMW">BMW</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
+                {models.map((item) => (
+                  <option key={item.id} value={item.model_id}>
+                    {item.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="label">
-              <label htmlFor="">Brand title</label> <br />
+              <label htmlFor="">Citiy id</label> <br />
               <select>
-                <option value="MERS">MERS</option>
-                <option value="BMW">BMW</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
+                {cities.map((item) => (
+                  <option key={item.id} value={item.city_id}>
+                    {item.name}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div className="label">
-              <label htmlFor="">Model title</label> <br />
+              <label htmlFor="">Category title</label> <br />
               <select>
-                <option value="MERS">MERS</option>
-                <option value="BMW">BMW</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
+                {categories.map((item) => (
+                  <option key={item.id} value={item.category_id}>
+                    {item.name_en}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="label">
-              <label htmlFor="">Brand title</label> <br />
+              <label htmlFor="">Location title</label> <br />
               <select>
-                <option value="MERS">MERS</option>
-                <option value="BMW">BMW</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
+                {locations.map((item) => (
+                  <option key={item.id} value={item.location_id}>
+                    {item.text}
+                  </option>
+                ))}
               </select>
             </div>
 
