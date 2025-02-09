@@ -12,12 +12,12 @@ const Cards = () => {
   const [cities, setCities] = useState([]);
   const [locations, setLocations] = useState([]);
   const [models, setModels] = useState([]);
-
   const [isLoading, setIsLoading] = useState(true);
   const [edit, setEdit] = useState(false);
   const [post, setPost] = useState(false);
   const [delet, setDelet] = useState(false);
   const tokenbek = localStorage.getItem("token");
+
   const [formData, setFormData] = useState({
     brand_id: "",
     model_id: "",
@@ -40,12 +40,12 @@ const Cards = () => {
     price_in_usd: "",
     price_in_aed_sale: "",
     price_in_usd_sale: "",
+    images: "",
     location_id: "",
     inclusive: "",
     cover: "",
   });
   console.log(tokenbek);
-
   function getCategory() {
     setIsLoading(true);
     fetch("https://realauto.limsa.uz/api/cars")
@@ -134,23 +134,28 @@ const Cards = () => {
   console.log(categories);
 
   const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
+    const { name, value, type, checked, files } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "file" ? files : value,
+      [name]:
+        type === "checkbox" ? checked : type === "file" ? files[0] : value,
     }));
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const formDataForCreate = new FormData();
+
     Object.keys(formData).forEach((key) => {
       if (key === "files" && formData[key]) {
         Array.from(formData[key]).forEach((file) => {
           formDataForCreate.append("files", file);
         });
+      } else if (key === "cover" && formData[key]) {
+        formDataForCreate.append("cover", formData[key][0]);
+      } else if (key === "inclusive") {
+        formDataForCreate.append(key, formData[key].toString());
       } else {
         formDataForCreate.append(key, formData[key]);
       }
@@ -159,7 +164,7 @@ const Cards = () => {
     fetch("https://realauto.limsa.uz/api/cars", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${tokenbek}`,
+        Authorization: `Bearer ${"token"}`,
       },
       body: formDataForCreate,
     })
@@ -171,6 +176,7 @@ const Cards = () => {
           getCategory();
         } else {
           toast.error("Xatolik yuz berdi!");
+          console.error("Xatolik yuz berdi", error.massage);
         }
       })
       .catch((error) => {
@@ -178,6 +184,38 @@ const Cards = () => {
         toast.error("Server bilan bog‘lanishda muammo yuz berdi!");
       });
   };
+  const deleteCategory = (id) => {
+    if (!tokenbek) {
+      toast.error("Token is missing")
+      return;
+    }
+
+    fetch(`https://realauto.limsa.uz/api/cars/${id}` , {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${tokenbek}`,
+
+      },
+      
+    })
+    .then((res) => res.json())
+    .then((response) => {
+      if (response?.success) {
+        toast.success(response?.massage);
+        toast.success("O'chirildi")
+        getCategory();
+      }else{
+        toast.error(response?.massage || "Unknown error") ;
+      }
+    })
+    .catch((err) => {
+      toast.error("Error deleting cargory");
+      console.log(err)
+    })
+  }
+
+  
+
 
   return (
     <div className="Cards">
@@ -238,7 +276,7 @@ const Cards = () => {
                         <span>{item?.text}</span>
                       </td> */}
                       <td>
-                        <button>delet</button>
+                        <button onClick={() => deleteCategory(item.id)}>delet</button>
                       </td>
                       <td>
                         <button onClick={() => setEdit(true)}>edit</button>
@@ -270,7 +308,7 @@ const Cards = () => {
                 type="number"
                 name="color"
                 placeholder="Color"
-                value={FormDataEvent.color}
+                value={formData.color}
                 onChange={handleChange}
               />
             </div>
@@ -278,7 +316,7 @@ const Cards = () => {
               <label htmlFor="">Year</label>
               <br />
               <input
-                type="text"
+                type="number"
                 name="year"
                 placeholder="Year"
                 value={formData.year}
@@ -290,7 +328,7 @@ const Cards = () => {
               <label htmlFor="dswrgf">Seconds</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Seconds"
                 name="seconds"
                 value={formData.seconds}
@@ -302,7 +340,7 @@ const Cards = () => {
               <label htmlFor="dswrgf">Max speed</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Max speed"
                 name="max_speed"
                 value={formData.max_speed}
@@ -314,7 +352,7 @@ const Cards = () => {
               <label htmlFor="dswrgf">Max people</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Max people"
                 name="max_people"
                 value={formData.max_people}
@@ -373,7 +411,7 @@ const Cards = () => {
               <label htmlFor="dswrgf">Limitperday</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Limitperday"
                 name="limitperday"
                 value={formData.limitperday}
@@ -382,10 +420,21 @@ const Cards = () => {
             </div>
 
             <div className="label">
+              <label htmlFor="">Deposit</label>
+              <br />
+              <input
+                type="number"
+                name="deposit"
+                value={formData.deposit}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="label">
               <label htmlFor="dswrgf">Premium protection</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Premium protection"
                 name="premium_protection"
                 value={formData.premium_protection}
@@ -396,7 +445,7 @@ const Cards = () => {
               <label htmlFor="dswrgf">Price in AED</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Price in AED"
                 name="price_in_aed"
                 value={formData.price_in_aed}
@@ -407,7 +456,7 @@ const Cards = () => {
               <label htmlFor="dswrgf">Price in USD</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Price in USD"
                 name="price_in_usd"
                 value={formData.price_in_usd}
@@ -418,18 +467,19 @@ const Cards = () => {
               <label htmlFor="dswrgf">Price in AED sale</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Price in USD"
                 name="price_in_aed_sale"
                 value={formData.price_in_aed_sale}
                 onChange={handleChange}
               />
             </div>
+
             <div className="label">
               <label htmlFor="dswrgf">Price in USD sale</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Price in USD sale"
                 name="price_in_usd_sale"
                 value={formData.price_in_usd_sale}
@@ -438,21 +488,61 @@ const Cards = () => {
             </div>
 
             <div className="label">
-              <label htmlFor="dswrgf">Cover</label>
+              <label htmlFor="inclusive">Inclusive:</label>
               <br />
-              <input type="file" name="files" onChange={handleChange} />
+              <input
+                type="checkbox"
+                name="inclusive"
+                checked={formData.inclusive} // `value` o'rniga `checked` ishlating
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    inclusive: e.target.checked, // `boolean` qiymatni saqlang
+                  }))
+                }
+              />
+            </div>
+
+            <div className="label">
+              <label htmlFor="cover">Cover:</label>
+              <br />
+              <input
+                type="file"
+                name="cover"
+                onChange={handleChange} // Faylni tanlanganda `handleChange` orqali qo'shing
+              />
             </div>
 
             <div className="label">
               <label htmlFor="dswrgf">images 1</label>
               <br />
-              <input type="file" name="files" onChange={handleChange} />
+              <input
+                type="file"
+                name="images"
+                multiple // Agar bir nechta fayl yuklash kerak bo‘lsa
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    images: e.target.files, // Fayl obyektlarini olish
+                  }))
+                }
+              />
             </div>
 
             <div className="label">
               <label htmlFor="dswrgf">images 2</label>
               <br />
-              <input type="file" name="files" onChange={handleChange} />
+              <input
+                type="file"
+                name="images"
+                multiple // Agar bir nechta fayl yuklash kerak bo‘lsa
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    images: e.target.files, // Fayl obyektlarini olish
+                  }))
+                }
+              />
             </div>
 
             {/* < ---  Select  */}
@@ -636,7 +726,7 @@ const Cards = () => {
             <div className="label">
               <label htmlFor="dswrgf">Cover</label>
               <br />
-              <input type="file" placeholder="Price in USD sale" />
+              <input type="file" name="cover" onChange={handleChange} />
             </div>
 
             <div className="label">
@@ -710,6 +800,7 @@ const Cards = () => {
         </div>
       </div>
     </div>
+
   );
 };
 

@@ -205,37 +205,38 @@ const Home = () => {
           <ul className="menu">
             <li
               className={activeComponent === "A" ? "active" : ""}
-              onClick={() => setActiveComponent("A")}
+              onClick={() => setActiveComponent("A" , setOpen(false))}
+             
             >
               Categories
             </li>
             <li
               className={activeComponent === "B" ? "active" : ""}
-              onClick={() => setActiveComponent("B")}
+              onClick={() => setActiveComponent("B", setOpen(false))}
             >
               Brands
             </li>
             <li
               className={activeComponent === "C" ? "active" : ""}
-              onClick={() => setActiveComponent("C")}
+              onClick={() => setActiveComponent("C" , setOpen(false))}
             >
               Cities
             </li>
             <li
               className={activeComponent === "D" ? "active" : ""}
-              onClick={() => setActiveComponent("D")}
+              onClick={() => setActiveComponent("D" , setOpen(false))}
             >
               Locations
             </li>
             <li
               className={activeComponent === "E" ? "active" : ""}
-              onClick={() => setActiveComponent("E")}
+              onClick={() => setActiveComponent("E" , setOpen(false))}
             >
               Cars
             </li>
             <li
               className={activeComponent === "F" ? "active" : ""}
-              onClick={() => setActiveComponent("F")}
+              onClick={() => setActiveComponent("F" , setOpen(false))}
             >
               Models
             </li>
