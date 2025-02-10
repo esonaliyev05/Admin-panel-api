@@ -231,21 +231,7 @@ const Brands = () => {
                 X
               </div>
 
-              {/* <select
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                required
-                style={{ width: "100", height: "40px", outline: "none" }}
-              >
-                <option value="">Tanlang...</option>
-                <option value="BMW">BMW</option>
-                <option value="MERS">MERS</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
-              </select> */}
+   
               <input
                 type="text"
                 name="title"
