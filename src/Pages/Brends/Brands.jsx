@@ -11,6 +11,8 @@ const Brands = () => {
   const [pushopen, setPush] = useState(false);
   const [edit, setEdit] = useState(false);
   const [brendId, setBrendId] = useState(null);
+  const [loding, setLoading] = useState(false);
+  const [updated, setUpdated] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     file: null,
@@ -45,6 +47,8 @@ const Brands = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
+    setUpdated(true);
 
     if (!formData.title || !formData.file) {
       toast.error("Please fill all fields");
@@ -58,7 +62,7 @@ const Brands = () => {
     fetch("https://realauto.limsa.uz/api/brands", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${tokenbek}`, 
+        Authorization: `Bearer ${tokenbek}`,
       },
       body: formDataForCreate,
     })
@@ -75,6 +79,10 @@ const Brands = () => {
       .catch((err) => {
         toast.error("Error creating category");
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+        setUpdated(false);
       });
   };
 
@@ -103,7 +111,7 @@ const Brands = () => {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${tokenbek}`,
-        "Content-Type": "multipart/form-data"
+        "Content-Type": "multipart/form-data",
       },
       body: formDataForEdit,
     })
@@ -190,12 +198,12 @@ const Brands = () => {
                         />
                       </td>
                       <td>
-                      <button 
-    onClick={() => deleteCategory(item.id)}
-    disabled={isLoading} // Disable button while loading
-  >
-    O'chirish
-  </button>
+                        <button
+                          onClick={() => deleteCategory(item.id)}
+                          disabled={isLoading} // Disable button while loading
+                        >
+                          O'chirish
+                        </button>
                       </td>
                       <th>
                         <button onClick={() => handleEdit(item.id, item.title)}>
@@ -238,10 +246,13 @@ const Brands = () => {
                 <option value="AUDI">AUDI</option>
                 <option value="FERRARI">FERRARI</option>
               </select> */}
-              <input type="text"    name="title"
+              <input
+                type="text"
+                name="title"
                 value={formData.title}
                 onChange={handleChange}
-                required />
+                required
+              />
 
               <input
                 type="file"
@@ -251,7 +262,9 @@ const Brands = () => {
                 onChange={handleChange}
               />
 
-              <button type="submit">Add</button>
+              <button type="submit" disabled={loding}>
+                {loding ? "Looading..." : "Submit"}
+              </button>
             </form>
           </div>
         </div>
@@ -264,26 +277,14 @@ const Brands = () => {
               <div className="qut-edit" onClick={() => setEdit(false)}>
                 X
               </div>
-{/* 
-              <select
+
+              <input
+                type="text"
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
                 required
-                style={{ width: "100", height: "40px", outline: "none" }}
-              >
-                        <option value="">Tanlang...</option>
-                <option value="BMW">BMW</option>
-                <option value="MERS">MERS</option>
-                <option value="BMW-M5">BMW-M5</option>
-                <option value="BMW-X5">BMW-X5</option>
-                <option value="AUDI">AUDI</option>
-                <option value="FERRARI">FERRARI</option>
-              </select> */}
-              <input type="text"   name="title"
-                value={formData.title}
-                onChange={handleChange}
-                required />
+              />
 
               <input
                 type="file"
@@ -292,7 +293,9 @@ const Brands = () => {
                 onChange={handleChange}
               />
 
-              <button type="submit">Update</button>
+              <button type="submit" disabled={updated}>
+                {updated ? "Edit ..." : "Update"}
+              </button>
             </form>
           </div>
         </div>

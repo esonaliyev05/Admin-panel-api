@@ -16,6 +16,7 @@ const Cards = () => {
   const [edit, setEdit] = useState(false);
   const [post, setPost] = useState(false);
   const [delet, setDelet] = useState(false);
+  const [loding , setLoading] = useState(false)
   const tokenbek = localStorage.getItem("token");
 
   const [formData, setFormData] = useState({
@@ -26,7 +27,6 @@ const Cards = () => {
     year: "",
     seconds: "",
     category_id: "",
-    files: null,
     max_speed: "",
     max_people: "",
     transmission: "",
@@ -40,11 +40,14 @@ const Cards = () => {
     price_in_usd: "",
     price_in_aed_sale: "",
     price_in_usd_sale: "",
-    images: "",
+    images: [], 
     location_id: "",
     inclusive: "",
-    cover: "",
+    cover: null,
+    
+    
   });
+  
   console.log(tokenbek);
   function getCategory() {
     setIsLoading(true);
@@ -130,41 +133,43 @@ const Cards = () => {
     };
   }, []);
 
-  console.log(brands);
-  console.log(categories);
 
   const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
-
+    const { name, value, type, files } = e.target;
+  
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        type === "checkbox" ? checked : type === "file" ? files[0] : value,
+      [name]: type === "file" 
+        ? (name === "cover" ? files[0] : [...(prev[name] || []), ...files]) 
+        : ["color", "drive_side", "motor", "petrol", "transmission"].includes(name)
+          ? value.slice(0, 4) 
+          : value
     }));
   };
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setLoading(true)
+    console.log("Yuborilayotgan ma'lumotlar:", formData); 
+  
     const formDataForCreate = new FormData();
-
+  
     Object.keys(formData).forEach((key) => {
-      if (key === "files" && formData[key]) {
-        Array.from(formData[key]).forEach((file) => {
-          formDataForCreate.append("files", file);
+      if (key === "images" && formData[key]?.length > 0) {
+        formData[key].forEach((file) => {
+          formDataForCreate.append("images", file);
         });
       } else if (key === "cover" && formData[key]) {
-        formDataForCreate.append("cover", formData[key][0]);
-      } else if (key === "inclusive") {
-        formDataForCreate.append(key, formData[key].toString());
+        formDataForCreate.append("cover", formData[key]);
       } else {
         formDataForCreate.append(key, formData[key]);
       }
     });
-
+  
     fetch("https://realauto.limsa.uz/api/cars", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${"token"}`,
+        Authorization: `Bearer ${tokenbek}`,
       },
       body: formDataForCreate,
     })
@@ -174,9 +179,88 @@ const Cards = () => {
           toast.success("Ma'lumot muvaffaqiyatli qo'shildi!");
           setPost(false);
           getCategory();
+          setFormData({})
+          
+     
+        } else {
+          console.error("Xatolik:", response);
+          toast.error("Xatolik yuz berdi!");
+        }
+      })
+      .catch((error) => {
+        console.error("Xatolik:", error);
+        toast.error("Server bilan bog‘lanishda muammo yuz berdi!");
+      })
+      .finally(() => {
+        setLoading(false); 
+      });
+  };
+  console.log("Yuborilayotgan formData:", formData);
+
+  
+  
+  const deleteCategory = (id) => {
+    if (!tokenbek) {
+      toast.error("Token is missing");
+      return;
+    }
+
+    fetch(`https://realauto.limsa.uz/api/cars/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${tokenbek}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response?.success) {
+          toast.success(response?.massage);
+          toast.success("O'chirildi");
+          getCategory();
+        } else {
+          toast.error(response?.massage || "Unknown error");
+        }
+      })
+      .catch((err) => {
+        toast.error("Error deleting cargory");
+        console.log(err);
+      });
+  };
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+
+    const formDataForUpdate = new FormData();
+
+    Object.keys(formData).forEach((key) => {
+      if (key === "files" && formData[key]) {
+        Array.from(formData[key]).forEach((file) => {
+          formDataForUpdate.append("files", file);
+        });
+      } else if (key === "cover" && formData[key]) {
+        formDataForUpdate.append("cover", formData[key][0]);
+      } else if (key === "inclusive") {
+        formDataForUpdate.append(key, formData[key].toString());
+      } else {
+        formDataForUpdate.append(key, formData[key]);
+      }
+    });
+
+    fetch(`https://realauto.limsa.uz/api/cars/${id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${tokenbek}`,
+      },
+      body: formDataForUpdate,
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.success) {
+          toast.success("Ma'lumot muvaffaqiyatli yangilandi!");
+          setEdit(false);
+          getCategory();
         } else {
           toast.error("Xatolik yuz berdi!");
-          console.error("Xatolik yuz berdi", error.massage);
+          console.error("Xatolik yuz berdi", response.message);
         }
       })
       .catch((error) => {
@@ -184,37 +268,6 @@ const Cards = () => {
         toast.error("Server bilan bog‘lanishda muammo yuz berdi!");
       });
   };
-  const deleteCategory = (id) => {
-    if (!tokenbek) {
-      toast.error("Token is missing")
-      return;
-    }
-
-    fetch(`https://realauto.limsa.uz/api/cars/${id}` , {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${tokenbek}`,
-
-      },
-      
-    })
-    .then((res) => res.json())
-    .then((response) => {
-      if (response?.success) {
-        toast.success(response?.massage);
-        toast.success("O'chirildi")
-        getCategory();
-      }else{
-        toast.error(response?.massage || "Unknown error") ;
-      }
-    })
-    .catch((err) => {
-      toast.error("Error deleting cargory");
-      console.log(err)
-    })
-  }
-
-  
 
 
   return (
@@ -276,7 +329,9 @@ const Cards = () => {
                         <span>{item?.text}</span>
                       </td> */}
                       <td>
-                        <button onClick={() => deleteCategory(item.id)}>delet</button>
+                        <button onClick={() => deleteCategory(item.id)}>
+                          delet
+                        </button>
                       </td>
                       <td>
                         <button onClick={() => setEdit(true)}>edit</button>
@@ -478,14 +533,9 @@ const Cards = () => {
             <div className="label">
               <label htmlFor="dswrgf">Price in USD sale</label>
               <br />
-              <input
-                type="number"
-                placeholder="Price in USD sale"
-                name="price_in_usd_sale"
-                value={formData.price_in_usd_sale}
-                onChange={handleChange}
-              />
+              <input type="number"  placeholder="Price in USD" name="price_in_usd_sale" value={formData.price_in_usd_sale} onChange={handleChange}  />
             </div>
+
 
             <div className="label">
               <label htmlFor="inclusive">Inclusive:</label>
@@ -493,11 +543,11 @@ const Cards = () => {
               <input
                 type="checkbox"
                 name="inclusive"
-                checked={formData.inclusive} // `value` o'rniga `checked` ishlating
+                checked={formData.inclusive}
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    inclusive: e.target.checked, // `boolean` qiymatni saqlang
+                    inclusive: e.target.checked,
                   }))
                 }
               />
@@ -506,11 +556,12 @@ const Cards = () => {
             <div className="label">
               <label htmlFor="cover">Cover:</label>
               <br />
-              <input
-                type="file"
-                name="cover"
-                onChange={handleChange} // Faylni tanlanganda `handleChange` orqali qo'shing
-              />
+              <input type="file" 
+               name="cover"
+               multiple 
+               accept="image/png"
+               onChange={handleChange}/>
+
             </div>
 
             <div className="label">
@@ -519,13 +570,9 @@ const Cards = () => {
               <input
                 type="file"
                 name="images"
-                multiple // Agar bir nechta fayl yuklash kerak bo‘lsa
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    images: e.target.files, // Fayl obyektlarini olish
-                  }))
-                }
+                multiple
+                accept="image/png"
+                onChange={handleChange}
               />
             </div>
 
@@ -535,13 +582,9 @@ const Cards = () => {
               <input
                 type="file"
                 name="images"
-                multiple // Agar bir nechta fayl yuklash kerak bo‘lsa
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    images: e.target.files, // Fayl obyektlarini olish
-                  }))
-                }
+                multiple
+                accept="image/png"
+                onChange={handleChange}
               />
             </div>
 
@@ -627,12 +670,16 @@ const Cards = () => {
               </select>
             </div>
 
-            <button type="submit">Submit</button>
+            <button type="submit" disabled={loding}>
+                   
+                   {loding ? "Loadding ... " : "Submit"}
+               
+            </button>
           </form>
         </div>
       </div>
 
-      <div className={edit ? "Cards-edit activ" : "Cards-edit"}>
+      {/* <div className={edit ? "Cards-edit activ" : "Cards-edit"}>
         <div className="Cards-parent">
           <form className="Cards-form">
             <div className="edit" onClick={() => setEdit(false)}>
@@ -642,85 +689,158 @@ const Cards = () => {
             <div className="label">
               <label htmlFor="dswrgf">Color</label>
               <br />
-              <input type="text" placeholder="Color" />
+              <input
+                type="text"
+                value={formData.color}
+                onChange={handleChange}
+                placeholder="Color"
+              />
             </div>
             <div className="label">
               <label htmlFor="">Year</label>
               <br />
-              <input type="text" placeholder="Year" />
+              <input
+                type="text"
+                placeholder="Year"
+                value={formData.year}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="label">
               <label htmlFor="dswrgf">Seconds</label>
               <br />
-              <input type="text" placeholder="Seconds" />
+              <input
+                type="text"
+                placeholder="Seconds"
+                value={formData.seconds}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="label">
               <label htmlFor="dswrgf">Max speed</label>
               <br />
-              <input type="text" placeholder="Max speed" />
+              <input
+                type="text"
+                placeholder="Max speed"
+                value={formData.max_speed}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="label">
               <label htmlFor="dswrgf">Max people</label>
               <br />
-              <input type="text" placeholder="Max people" />
+              <input
+                type="text"
+                placeholder="Max people"
+                value={formData.max_people}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="label">
               <label htmlFor="dswrgf">Transmission</label>
               <br />
-              <input type="text" placeholder="Transmission" />
+              <input
+                type="text"
+                placeholder="Transmission"
+                value={formData.transmission}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="label">
               <label htmlFor="dswrgf">Motor</label>
               <br />
-              <input type="text" placeholder="Motor" />
+              <input
+                type="text"
+                placeholder="Motor"
+                value={formData.motor}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="label">
               <label htmlFor="dswrgf">Drive side</label>
               <br />
-              <input type="text" placeholder="Drive side" />
+              <input
+                type="text"
+                placeholder="Drive side"
+                value={formData.drive_side}
+                onChange={handleChange}
+              />
             </div>
             <div className="label">
               <label htmlFor="dswrgf">Petrol</label>
               <br />
-              <input type="text" placeholder="Petrol" />
+              <input
+                type="text"
+                placeholder="Petrol"
+                value={formData.petrol}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="label">
               <label htmlFor="dswrgf">Limitperday</label>
               <br />
-              <input type="text" placeholder="Limitperday" />
+              <input
+                type="text"
+                placeholder="Limitperday"
+                value={formData.limitperday}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="label">
               <label htmlFor="dswrgf">Premium protection</label>
               <br />
-              <input type="text" placeholder="Premium protection" />
+              <input
+                type="text"
+                placeholder="Premium protection"
+                value={formData.premium_protection}
+                onChange={handleChange}
+              />
             </div>
             <div className="label">
               <label htmlFor="dswrgf">Price in AED</label>
               <br />
-              <input type="text" placeholder="Price in AED" />
+              <input
+                type="text"
+                placeholder="Price in AED"
+                value={formData.price_in_aed}
+                onChange={handleChange}
+              />
             </div>
             <div className="label">
               <label htmlFor="dswrgf">Price in USD</label>
               <br />
-              <input type="text" placeholder="Price in USD" />
+              <input
+                type="text"
+                placeholder="Price in USD"
+                value={formData.price_in_usd}
+                onChange={handleChange}
+              />
             </div>
             <div className="label">
               <label htmlFor="dswrgf">Price in AED sale</label>
               <br />
-              <input type="text" placeholder="Price in USD" />
+              <input
+                type="text"
+                placeholder="Price in USD"
+                value={formData.price_in_aed_sale}
+              />
             </div>
             <div className="label">
               <label htmlFor="dswrgf">Price in USD sale</label>
               <br />
-              <input type="text" placeholder="Price in USD sale" />
+              <input
+                type="text"
+                placeholder="Price in USD sale"
+                value={formData.price_in_usd_sale}
+              />
             </div>
 
             <div className="label">
@@ -732,22 +852,34 @@ const Cards = () => {
             <div className="label">
               <label htmlFor="dswrgf">Price in USD sale</label>
               <br />
-              <input type="file" placeholder="Price in USD sale" />
+              <input
+                type="file"
+                placeholder="Price in USD sale"
+                value={formData.price_in_usd_sale}
+              />
             </div>
 
             <div className="label">
               <label htmlFor="dswrgf">Price in USD sale</label>
               <br />
-              <input type="file" placeholder="Price in USD sale" />
+              <input
+                type="file"
+                placeholder="Price in USD sale"
+                value={formData.price_in_usd_sale}
+                onChange={handleChange}
+              />
             </div>
 
-            {/* < ---  Select  */}
 
             <div className="label">
               <label htmlFor="">Brand title</label> <br />
-              <select>
+              <select
+                name="brandTitle"
+                value={formData.brand_id}
+                onChange={handleChange}
+              >
                 {brands.map((item) => (
-                  <option key={item.id} value={item.model_id}>
+                  <option key={item.id} value={item.brand_id}>
                     {item.title}
                   </option>
                 ))}
@@ -755,7 +887,7 @@ const Cards = () => {
             </div>
             <div className="label">
               <label htmlFor="">Model title</label> <br />
-              <select>
+              <select value={formData.model_id} onChange={handleChange}>
                 {models.map((item) => (
                   <option key={item.id} value={item.model_id}>
                     {item.name}
@@ -765,7 +897,7 @@ const Cards = () => {
             </div>
             <div className="label">
               <label htmlFor="">Citiy id</label> <br />
-              <select>
+              <select value={formData.city_id} onChange={handleChange}>
                 {cities.map((item) => (
                   <option key={item.id} value={item.city_id}>
                     {item.name}
@@ -776,7 +908,7 @@ const Cards = () => {
 
             <div className="label">
               <label htmlFor="">Category title</label> <br />
-              <select>
+              <select value={formData.category_id} onChange={handleChange}>
                 {categories.map((item) => (
                   <option key={item.id} value={item.category_id}>
                     {item.name_en}
@@ -786,7 +918,7 @@ const Cards = () => {
             </div>
             <div className="label">
               <label htmlFor="">Location title</label> <br />
-              <select>
+              <select value={formData.location_id} onChange={handleChange}>
                 {locations.map((item) => (
                   <option key={item.id} value={item.location_id}>
                     {item.text}
@@ -798,9 +930,8 @@ const Cards = () => {
             <button type="submit">Submit</button>
           </form>
         </div>
-      </div>
+      </div> */}
     </div>
-
   );
 };
 

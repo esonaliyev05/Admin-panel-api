@@ -23,7 +23,8 @@ const Home = () => {
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [categoryToEdit, setCategoryToEdit] = useState(null);
   const [activeComponent, setActiveComponent] = useState("A");
-  const [open , setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [loding, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const logoutFunction = () => {
@@ -56,6 +57,8 @@ const Home = () => {
 
   const createCategory = (e) => {
     e.preventDefault();
+    setLoading(false);
+
     if (!tokenbek) {
       toast.error("Token is missing!");
       return;
@@ -91,6 +94,10 @@ const Home = () => {
       .catch((err) => {
         toast.error("Error creating category");
         console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+        setPost(false);
       });
   };
 
@@ -193,20 +200,18 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="admin-panel">
-        
-        {/* Sidebar */}
-        {/* Sidebar */}
         <aside className={open ? "sidebar activ" : "sidebar"}>
-   
-          <div className="sidebar-header">Admin Panel      <div className="icon">
-            <GoArrowLeft onClick={() => setOpen(false)}/>
-          </div></div>
-      
+          <div className="sidebar-header">
+            Admin Panel{" "}
+            <div className="icon">
+              <GoArrowLeft onClick={() => setOpen(false)} />
+            </div>
+          </div>
+
           <ul className="menu">
             <li
               className={activeComponent === "A" ? "active" : ""}
-              onClick={() => setActiveComponent("A" , setOpen(false))}
-             
+              onClick={() => setActiveComponent("A", setOpen(false))}
             >
               Categories
             </li>
@@ -218,25 +223,25 @@ const Home = () => {
             </li>
             <li
               className={activeComponent === "C" ? "active" : ""}
-              onClick={() => setActiveComponent("C" , setOpen(false))}
+              onClick={() => setActiveComponent("C", setOpen(false))}
             >
               Cities
             </li>
             <li
               className={activeComponent === "D" ? "active" : ""}
-              onClick={() => setActiveComponent("D" , setOpen(false))}
+              onClick={() => setActiveComponent("D", setOpen(false))}
             >
               Locations
             </li>
             <li
               className={activeComponent === "E" ? "active" : ""}
-              onClick={() => setActiveComponent("E" , setOpen(false))}
+              onClick={() => setActiveComponent("E", setOpen(false))}
             >
               Cars
             </li>
             <li
               className={activeComponent === "F" ? "active" : ""}
-              onClick={() => setActiveComponent("F" , setOpen(false))}
+              onClick={() => setActiveComponent("F", setOpen(false))}
             >
               Models
             </li>
@@ -247,7 +252,9 @@ const Home = () => {
         <main className="main-content">
           <header className="navbar">
             <div className="search-bar">
-              <div className="bars" onClick={() => setOpen(true)}><HiMiniBars3BottomLeft/></div>
+              <div className="bars" onClick={() => setOpen(true)}>
+                <HiMiniBars3BottomLeft />
+              </div>
               <input
                 type="search"
                 className="search-input"
@@ -424,8 +431,8 @@ const Home = () => {
                   onChange={(e) => setPicture(e.target.files[0])}
                   accept="image/png, image/jpeg"
                 />
-                <button type="submit" onClick={() => setPost(false)}>
-                  Post
+                <button type="submit" disabled={loding}>
+                  {loding ? "Looading ..." : "Submit"}
                 </button>
               </form>
             </div>
