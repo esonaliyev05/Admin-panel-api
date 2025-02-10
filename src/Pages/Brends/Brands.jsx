@@ -231,7 +231,6 @@ const Brands = () => {
                 X
               </div>
 
-   
               <input
                 type="text"
                 name="title"
