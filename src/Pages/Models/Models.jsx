@@ -46,23 +46,23 @@ const Models = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     if (!formData.name || !formData.brand_id) {
       toast.error("Please fill all fields!");
       return;
     }
-  
+
     if (!token) {
       toast.error("Token not found. Please login.");
       return;
     }
-  
+
     setIsLoading(true); // Set loading to true
-  
+
     const formDataForSubmit = new FormData();
     formDataForSubmit.append("name", formData.name);
     formDataForSubmit.append("brand_id", formData.brand_id);
-  
+
     fetch("https://realauto.limsa.uz/api/models", {
       method: "POST",
       headers: {
@@ -89,7 +89,6 @@ const Models = () => {
         setIsLoading(false); // Stop loading after the operation completes
       });
   };
-  
 
   const handleEdit = (item) => {
     setFormData({
@@ -141,15 +140,15 @@ const Models = () => {
         setIsLoading(false);
       });
   };
- 
+
   const deleteCategory = (id) => {
     if (!token) {
       toast.error("Token is missing");
       return;
     }
-  
+
     setIsLoading(true); // Start loading when deleting
-  
+
     fetch(`https://realauto.limsa.uz/api/models/${id}`, {
       method: "DELETE",
       headers: {
@@ -173,8 +172,6 @@ const Models = () => {
         setIsLoading(false); // Stop loading after the operation completes
       });
   };
-  
-  
 
   return (
     <div className="Models">
@@ -210,7 +207,9 @@ const Models = () => {
                       <td>{item?.name}</td>
                       <td>{item?.brand_id}</td>
                       <td>
-                        <button onClick={() => deleteCategory(item.id) }>O'chirish</button>
+                        <button onClick={() => deleteCategory(item.id)}>
+                          O'chirish
+                        </button>
                       </td>
                       <td>
                         <button onClick={() => handleEdit(item)}>

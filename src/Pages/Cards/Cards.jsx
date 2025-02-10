@@ -308,7 +308,6 @@ const Cards = () => {
                       <td>{item?.motor}</td>
                       <td>{item?.drive_side}</td>
                       <td>{item?.petrol}</td>
-                
                       <td>
                         <img
                           src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}

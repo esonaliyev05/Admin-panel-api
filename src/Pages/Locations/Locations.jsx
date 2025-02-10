@@ -17,7 +17,6 @@ const Locations = () => {
   const [locationToEdit, setLocationToEdit] = useState(null);
   const tokenbek = localStorage.getItem("token");
 
-  // Kategoriyalarni olish
   const getCategory = () => {
     setIsLoading(true);
     fetch("https://realauto.limsa.uz/api/locations")
@@ -50,7 +49,7 @@ const Locations = () => {
       file: null, // eski faylni ko'rsatmaslik
     });
     setLocationToEdit(item.id);
-    setEdit(true);  // Modalni ochish
+    setEdit(true); // Modalni ochish
   };
 
   // Inputlarni yangilash
@@ -100,20 +99,20 @@ const Locations = () => {
   // };
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     if (!formData.name && !formData.text && !formData.file) {
       toast.error("Iltimos, biron bir maydonni to'ldiring");
       return;
     }
-  
+
     // Yangi FormData yaratamiz va faqat o'zgargan maydonlarni qo'shamiz
     const formDataForEdit = new FormData();
-  
+
     // Har bir maydonni tekshirib, agar u o'zgargan bo'lsa, yuboramiz
     if (formData.name) formDataForEdit.append("name", formData.name);
     if (formData.text) formDataForEdit.append("text", formData.text);
     if (formData.file) formDataForEdit.append("images", formData.file);
-  
+
     const token = localStorage.getItem("token");
     fetch(`https://realauto.limsa.uz/api/locations/${locationToEdit}`, {
       method: "PUT",
@@ -126,8 +125,8 @@ const Locations = () => {
       .then((response) => {
         if (response?.success) {
           toast.success("Malumot muvaffaqiyatli yangilandi");
-          getCategory();  // Ma'lumotlarni yangilash
-          setEdit(false);  // Modalni yopish
+          getCategory(); // Ma'lumotlarni yangilash
+          setEdit(false); // Modalni yopish
         } else {
           toast.error(response?.message || "Xatolik");
         }
@@ -137,7 +136,6 @@ const Locations = () => {
         console.log(err);
       });
   };
-  
 
   // Kategoriyani o'chirish
   const deleteCategory = (locationId) => {
@@ -252,9 +250,7 @@ const Locations = () => {
                       </button>
                     </td>
                     <td>
-                      <button onClick={() => handleEdit(item)}>
-                        Edit
-                      </button>
+                      <button onClick={() => handleEdit(item)}>Edit</button>
                     </td>
                   </tr>
                 ))}
@@ -285,11 +281,7 @@ const Locations = () => {
               onChange={handleChange}
               placeholder="Text"
             />
-            <input
-              type="file"
-              name="file"
-              onChange={handleChange}
-            />
+            <input type="file" name="file" onChange={handleChange} />
             <button type="submit">Submit</button>
           </form>
         </div>
@@ -316,11 +308,7 @@ const Locations = () => {
               onChange={handleChange}
               placeholder="Text"
             />
-            <input
-              type="file"
-              name="file"
-              onChange={handleChange}
-            />
+            <input type="file" name="file" onChange={handleChange} />
             <button type="submit">Save</button>
           </form>
         </div>
