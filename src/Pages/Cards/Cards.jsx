@@ -211,7 +211,33 @@ const Cards = () => {
           toast.success("Ma'lumot muvaffaqiyatli qo'shildi!");
           setPost(false);
           getCategory();
-          setFormData({})
+          setFormData({
+            brand_id: "",
+            model_id: "",
+            city_id: "",
+            color: "",
+            year: "",
+            seconds: "",
+            category_id: "",
+            max_speed: "",
+            max_people: "",
+            transmission: "",
+            motor: "",
+            drive_side: "",
+            petrol: "",
+            limitperday: "",
+            deposit: "",
+            premium_protection: "",
+            price_in_aed: "",
+            price_in_usd: "",
+            price_in_aed_sale: "",
+            price_in_usd_sale: "",
+            images: [], 
+            location_id: "",
+            inclusive: "",
+            cover: null,
+          });
+          
           
      
         } else {
