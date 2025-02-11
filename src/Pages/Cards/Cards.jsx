@@ -16,9 +16,9 @@ const Cards = () => {
   const [edit, setEdit] = useState(false);
   const [post, setPost] = useState(false);
   const [delet, setDelet] = useState(false);
-  const [loding , setLoading] = useState(false)
+  const [loding, setLoading] = useState(false);
   const [editingCarId, setEditingCarId] = useState(null);
-  
+
   const tokenbek = localStorage.getItem("token");
 
   const [formData, setFormData] = useState({
@@ -42,16 +42,14 @@ const Cards = () => {
     price_in_usd: "",
     price_in_aed_sale: "",
     price_in_usd_sale: "",
-    images: [], 
+    images: [],
     location_id: "",
     inclusive: "",
     cover: null,
-    
-    
   });
   const handleEdit = (carData) => {
     setEdit(true); // Edit rejimni yoqish
-  
+
     setFormData({
       color: carData.color || "",
       year: carData.year || "",
@@ -75,11 +73,10 @@ const Cards = () => {
       location_id: carData.location_id || "",
       cover: null, // Fayl maydoni uchun default qiymat
     });
-  
+
     setEditingCarId(carData.id);
   };
 
-  
   // console.log(tokenbek);
   function getCategory() {
     setIsLoading(true);
@@ -165,27 +162,31 @@ const Cards = () => {
     };
   }, []);
 
-
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
-  
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "file" 
-        ? (name === "cover" ? files[0] : [...(prev[name] || []), ...files]) 
-        : ["color", "drive_side", "motor", "petrol", "transmission"].includes(name)
-          ? value.slice(0, 4) 
-          : value
+      [name]:
+        type === "file"
+          ? name === "cover"
+            ? files[0]
+            : [...(prev[name] || []), ...files]
+          : ["color", "drive_side", "motor", "petrol", "transmission"].includes(
+              name
+            )
+          ? value.slice(0, 4)
+          : value,
     }));
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true)
-    console.log("Yuborilayotgan ma'lumotlar:", formData); 
-  
+    setLoading(true);
+    console.log("Yuborilayotgan ma'lumotlar:", formData);
+
     const formDataForCreate = new FormData();
-  
+
     Object.keys(formData).forEach((key) => {
       if (key === "images" && formData[key]?.length > 0) {
         formData[key].forEach((file) => {
@@ -197,7 +198,7 @@ const Cards = () => {
         formDataForCreate.append(key, formData[key]);
       }
     });
-  
+
     fetch("https://realauto.limsa.uz/api/cars", {
       method: "POST",
       headers: {
@@ -211,7 +212,9 @@ const Cards = () => {
           toast.success("Ma'lumot muvaffaqiyatli qo'shildi!");
           setPost(false);
           getCategory();
-          setFormData(prev => Object.fromEntries(Object.keys(prev).map(key => [key, ""])));
+          setFormData((prev) =>
+            Object.fromEntries(Object.keys(prev).map((key) => [key, ""]))
+          );
           // setFormData({
           //   brand_id: "",
           //   model_id: "",
@@ -233,14 +236,11 @@ const Cards = () => {
           //   price_in_usd: "",
           //   price_in_aed_sale: "",
           //   price_in_usd_sale: "",
-          //   images: [], 
+          //   images: [],
           //   location_id: "",
           //   inclusive: "",
           //   cover: null,
           // });
-          
-          
-     
         } else {
           console.error("Xatolik:", response);
           toast.error("Xatolik yuz berdi!");
@@ -251,14 +251,11 @@ const Cards = () => {
         toast.error("Server bilan bog‘lanishda muammo yuz berdi!");
       })
       .finally(() => {
-        setLoading(false); 
-        
+        setLoading(false);
       });
   };
   // console.log("Yuborilayotgan formData:", formData);
 
-  
-  
   const deleteCategory = (id) => {
     if (!tokenbek) {
       toast.error("Token is missing");
@@ -289,59 +286,60 @@ const Cards = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-  
+
     if (!editingCarId) {
       toast.error("Tahrir qilinayotgan avtomobil aniqlanmadi!");
       return;
     }
-  
+
     const formDataForUpdate = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-        if (key === "files" && value) {
-            Array.from(value).forEach((file) => {
-                formDataForUpdate.append("files", file);
-            });
-        } else if (key === "cover" && value) {
-            formDataForUpdate.append("cover", value instanceof FileList ? value[0] : value);
-        } else if (key === "inclusive") {
-            formDataForUpdate.append(key, value.toString());
-        } else if (value !== null && value !== undefined && value !== "") {
-            formDataForUpdate.append(key, value);
-        }
+      if (key === "files" && value) {
+        Array.from(value).forEach((file) => {
+          formDataForUpdate.append("files", file);
+        });
+      } else if (key === "cover" && value) {
+        formDataForUpdate.append(
+          "cover",
+          value instanceof FileList ? value[0] : value
+        );
+      } else if (key === "inclusive") {
+        formDataForUpdate.append(key, value.toString());
+      } else if (value !== null && value !== undefined && value !== "") {
+        formDataForUpdate.append(key, value);
+      }
     });
-  
+
     fetch(`https://realauto.limsa.uz/api/cars/${editingCarId}`, {
       method: "PUT",
       headers: {
-          Authorization: `Bearer ${tokenbek}`,
+        Authorization: `Bearer ${tokenbek}`,
       },
       body: formDataForUpdate,
-  })
-
-
-  .then((response) => response.json())
-.then((result) => {
-    if (result.success) {
-        toast.success("Ma'lumot muvaffaqiyatli yangilandi!");
-        setEdit(false);
-        setEditingCarId(null);
-        setFormData({});
-        getCategory();
-    } else {
-        toast.error("Xatolik yuz berdi: " + (result.message || "Noma'lum xatolik"));
-        console.error("Xatolik tafsilotlari:", result);
-    }
-})
-.catch((error) => {
-    console.error("Xatolik:", error);
-    toast.error("Server bilan bog‘lanishda muammo yuz berdi!");
-});
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.success) {
+          toast.success("Ma'lumot muvaffaqiyatli yangilandi!");
+          setEdit(false);
+          setEditingCarId(null);
+          setFormData({});
+          getCategory();
+        } else {
+          toast.error(
+            "Xatolik yuz berdi: " + (result.message || "Noma'lum xatolik")
+          );
+          console.error("Xatolik tafsilotlari:", result);
+        }
+      })
+      .catch((error) => {
+        console.error("Xatolik:", error);
+        toast.error("Server bilan bog‘lanishda muammo yuz berdi!");
+      });
   };
-  
+
   console.log("Tahrir qilinayotgan mashina ID:", editingCarId);
 
-  
-  
   return (
     <div className="Cards">
       <div className="container">
@@ -609,9 +607,15 @@ const Cards = () => {
             <div className="label">
               <label htmlFor="dswrgf">Price in USD sale</label>
               <br />
-              <input type="number"  placeholder="Price in USD" name="price_in_usd_sale" maxLength={4} value={formData.price_in_usd_sale} onChange={handleChange}  />
+              <input
+                type="number"
+                placeholder="Price in USD"
+                name="price_in_usd_sale"
+                maxLength={4}
+                value={formData.price_in_usd_sale}
+                onChange={handleChange}
+              />
             </div>
-
 
             <div className="label">
               <label htmlFor="inclusive">Inclusive:</label>
@@ -632,12 +636,13 @@ const Cards = () => {
             <div className="label">
               <label htmlFor="cover">Cover:</label>
               <br />
-              <input type="file" 
-               name="cover"
-               multiple 
-               accept="image/png"
-               onChange={handleChange}/>
-
+              <input
+                type="file"
+                name="cover"
+                multiple
+                accept="image/png"
+                onChange={handleChange}
+              />
             </div>
 
             <div className="label">
@@ -747,16 +752,14 @@ const Cards = () => {
             </div>
 
             <button type="submit" disabled={loding}>
-                   
-                   {loding ? "Loadding ... " : "Submit"}
-               
+              {loding ? "Loadding ... " : "Submit"}
             </button>
           </form>
         </div>
       </div>
 
       <div className={edit ? "Cards-edit activ" : "Cards-edit"}>
-      <div className="Cards-parent">
+        <div className="Cards-parent">
           <form className="Cards-form" onSubmit={handleEditSubmit}>
             <div className="edit" onClick={() => setEdit(false)}>
               <GoX />
@@ -954,9 +957,15 @@ const Cards = () => {
             <div className="label">
               <label htmlFor="dswrgf">Price in USD sale</label>
               <br />
-              <input type="number"  placeholder="Price in USD" name="price_in_usd_sale" maxLength={4} value={formData.price_in_usd_sale} onChange={handleChange}  />
+              <input
+                type="number"
+                placeholder="Price in USD"
+                name="price_in_usd_sale"
+                maxLength={4}
+                value={formData.price_in_usd_sale}
+                onChange={handleChange}
+              />
             </div>
-
 
             <div className="label">
               <label htmlFor="inclusive">Inclusive:</label>
@@ -977,12 +986,13 @@ const Cards = () => {
             <div className="label">
               <label htmlFor="cover">Cover:</label>
               <br />
-              <input type="file" 
-               name="cover"
-               multiple 
-               accept="image/png"
-               onChange={handleChange}/>
-
+              <input
+                type="file"
+                name="cover"
+                multiple
+                accept="image/png"
+                onChange={handleChange}
+              />
             </div>
 
             <div className="label">
@@ -1092,9 +1102,7 @@ const Cards = () => {
             </div>
 
             <button type="submit" disabled={loding}>
-                   
-                   {loding ? "Loadding ... " : "Submit"}
-               
+              {loding ? "Loadding ... " : "Submit"}
             </button>
           </form>
         </div>
