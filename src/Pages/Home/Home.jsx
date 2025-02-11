@@ -22,10 +22,14 @@ const Home = () => {
   const [post, setPost] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [categoryToEdit, setCategoryToEdit] = useState(null);
-  const [activeComponent, setActiveComponent] = useState("A");
+  const [activeComponent, setActiveComponent] = useState(() => {
+    return localStorage.getItem("activeComponent") || "A";
+  });
   const [open, setOpen] = useState(false);
   const [loding, setLoading] = useState(false);
-
+  useEffect(() => {
+    localStorage.setItem("activeComponent", activeComponent);
+  }, [activeComponent]);
   const navigate = useNavigate();
   const logoutFunction = () => {
     localStorage.removeItem("tokenchik");

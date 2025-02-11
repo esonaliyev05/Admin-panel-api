@@ -17,6 +17,8 @@ const Cards = () => {
   const [post, setPost] = useState(false);
   const [delet, setDelet] = useState(false);
   const [loding , setLoading] = useState(false)
+  const [editingCarId, setEditingCarId] = useState(null);
+  
   const tokenbek = localStorage.getItem("token");
 
   const [formData, setFormData] = useState({
@@ -47,8 +49,38 @@ const Cards = () => {
     
     
   });
+  const handleEdit = (carData) => {
+    setEdit(true); // Edit rejimni yoqish
   
-  console.log(tokenbek);
+    setFormData({
+      color: carData.color || "",
+      year: carData.year || "",
+      seconds: carData.seconds || "",
+      max_speed: carData.max_speed || "",
+      max_people: carData.max_people || "",
+      transmission: carData.transmission || "",
+      motor: carData.motor || "",
+      drive_side: carData.drive_side || "",
+      petrol: carData.petrol || "",
+      limitperday: carData.limitperday || "",
+      premium_protection: carData.premium_protection || "",
+      price_in_aed: carData.price_in_aed || "",
+      price_in_usd: carData.price_in_usd || "",
+      price_in_aed_sale: carData.price_in_aed_sale || "",
+      price_in_usd_sale: carData.price_in_usd_sale || "",
+      brand_id: carData.brand_id || "",
+      model_id: carData.model_id || "",
+      city_id: carData.city_id || "",
+      category_id: carData.category_id || "",
+      location_id: carData.location_id || "",
+      cover: null, // Fayl maydoni uchun default qiymat
+    });
+  
+    setEditingCarId(carData.id);
+  };
+
+  
+  // console.log(tokenbek);
   function getCategory() {
     setIsLoading(true);
     fetch("https://realauto.limsa.uz/api/cars")
@@ -193,9 +225,10 @@ const Cards = () => {
       })
       .finally(() => {
         setLoading(false); 
+        
       });
   };
-  console.log("Yuborilayotgan formData:", formData);
+  // console.log("Yuborilayotgan formData:", formData);
 
   
   
@@ -226,48 +259,63 @@ const Cards = () => {
         console.log(err);
       });
   };
-  const handleEditSubmit = (e) => {
+
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
-
-    const formDataForUpdate = new FormData();
-
-    Object.keys(formData).forEach((key) => {
-      if (key === "files" && formData[key]) {
-        Array.from(formData[key]).forEach((file) => {
-          formDataForUpdate.append("files", file);
-        });
-      } else if (key === "cover" && formData[key]) {
-        formDataForUpdate.append("cover", formData[key][0]);
-      } else if (key === "inclusive") {
-        formDataForUpdate.append(key, formData[key].toString());
-      } else {
-        formDataForUpdate.append(key, formData[key]);
-      }
-    });
-
-    fetch(`https://realauto.limsa.uz/api/cars/${id}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${tokenbek}`,
-      },
-      body: formDataForUpdate,
-    })
-      .then((res) => res.json())
-      .then((response) => {
-        if (response.success) {
-          toast.success("Ma'lumot muvaffaqiyatli yangilandi!");
-          setEdit(false);
-          getCategory();
-        } else {
-          toast.error("Xatolik yuz berdi!");
-          console.error("Xatolik yuz berdi", response.message);
+  
+    if (!editingCarId) {
+      toast.error("Tahrir qilinayotgan avtomobil aniqlanmadi!");
+      return;
+    }
+  
+    try {
+      const formDataForUpdate = new FormData();
+  
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key === "files" && value) {
+          Array.from(value).forEach((file) => {
+            formDataForUpdate.append("files", file);
+          });
+        } else if (key === "cover" && value) {
+          formDataForUpdate.append("cover", value instanceof FileList ? value[0] : value);
+        } else if (key === "inclusive") {
+          formDataForUpdate.append(key, value.toString());
+        } else if (value !== null && value !== undefined && value !== "") {
+          formDataForUpdate.append(key, value);
         }
-      })
-      .catch((error) => {
-        console.error("Xatolik:", error);
-        toast.error("Server bilan bog‘lanishda muammo yuz berdi!");
       });
+  
+      const response = await fetch(`https://realauto.limsa.uz/api/cars/${editingCarId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${tokenbek}`,
+        },
+        body: formDataForUpdate,
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok && result.success) {
+        toast.success("Ma'lumot muvaffaqiyatli yangilandi!");
+        setEdit(false);
+        setEditingCarId(null);
+        setFormData({}); // Formani tozalash
+        getCategory(); // Ro‘yxatni qayta yuklash
+      } else {
+        toast.error("Xatolik yuz berdi: " + (result.message || "Noma'lum xatolik"));
+        console.error("Xatolik tafsilotlari:", result);
+      }
+    } catch (error) {
+      console.error("Xatolik:", error);
+      toast.error("Server bilan bog‘lanishda muammo yuz berdi!");
+    }
   };
+  console.log("Tahrir qilinayotgan mashina ID:", editingCarId);
+
+
+  
+  
+  
 
 
   return (
@@ -354,6 +402,7 @@ const Cards = () => {
                 placeholder="Color"
                 value={formData.color}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
             <div className="label">
@@ -365,6 +414,7 @@ const Cards = () => {
                 placeholder="Year"
                 value={formData.year}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -377,6 +427,7 @@ const Cards = () => {
                 name="seconds"
                 value={formData.seconds}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -389,6 +440,7 @@ const Cards = () => {
                 name="max_speed"
                 value={formData.max_speed}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -401,6 +453,7 @@ const Cards = () => {
                 name="max_people"
                 value={formData.max_people}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -413,6 +466,7 @@ const Cards = () => {
                 name="transmission"
                 value={formData.transmission}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -425,6 +479,7 @@ const Cards = () => {
                 name="motor"
                 value={formData.motor}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -437,6 +492,7 @@ const Cards = () => {
                 name="drive_side"
                 value={formData.drive_side}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
             <div className="label">
@@ -448,6 +504,7 @@ const Cards = () => {
                 name="petrol"
                 value={formData.petrol}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -460,6 +517,7 @@ const Cards = () => {
                 name="limitperday"
                 value={formData.limitperday}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -471,6 +529,7 @@ const Cards = () => {
                 name="deposit"
                 value={formData.deposit}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -483,6 +542,7 @@ const Cards = () => {
                 name="premium_protection"
                 value={formData.premium_protection}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
             <div className="label">
@@ -494,6 +554,7 @@ const Cards = () => {
                 name="price_in_aed"
                 value={formData.price_in_aed}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
             <div className="label">
@@ -505,6 +566,7 @@ const Cards = () => {
                 name="price_in_usd"
                 value={formData.price_in_usd}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
             <div className="label">
@@ -516,13 +578,14 @@ const Cards = () => {
                 name="price_in_aed_sale"
                 value={formData.price_in_aed_sale}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
             <div className="label">
               <label htmlFor="dswrgf">Price in USD sale</label>
               <br />
-              <input type="number"  placeholder="Price in USD" name="price_in_usd_sale" value={formData.price_in_usd_sale} onChange={handleChange}  />
+              <input type="number"  placeholder="Price in USD" name="price_in_usd_sale" maxLength={4} value={formData.price_in_usd_sale} onChange={handleChange}  />
             </div>
 
 
@@ -668,9 +731,9 @@ const Cards = () => {
         </div>
       </div>
 
-      {/* <div className={edit ? "Cards-edit activ" : "Cards-edit"}>
-        <div className="Cards-parent">
-          <form className="Cards-form">
+      <div className={edit ? "Cards-edit activ" : "Cards-edit"}>
+      <div className="Cards-parent">
+          <form className="Cards-form" onSubmit={handleEditSubmit}>
             <div className="edit" onClick={() => setEdit(false)}>
               <GoX />
             </div>
@@ -679,20 +742,24 @@ const Cards = () => {
               <label htmlFor="dswrgf">Color</label>
               <br />
               <input
-                type="text"
+                type="number"
+                name="color"
+                placeholder="Color"
                 value={formData.color}
                 onChange={handleChange}
-                placeholder="Color"
+                maxLength={4}
               />
             </div>
             <div className="label">
               <label htmlFor="">Year</label>
               <br />
               <input
-                type="text"
+                type="number"
+                name="year"
                 placeholder="Year"
                 value={formData.year}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -700,10 +767,12 @@ const Cards = () => {
               <label htmlFor="dswrgf">Seconds</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Seconds"
+                name="seconds"
                 value={formData.seconds}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -711,10 +780,12 @@ const Cards = () => {
               <label htmlFor="dswrgf">Max speed</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Max speed"
+                name="max_speed"
                 value={formData.max_speed}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -722,10 +793,12 @@ const Cards = () => {
               <label htmlFor="dswrgf">Max people</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Max people"
+                name="max_people"
                 value={formData.max_people}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -735,8 +808,10 @@ const Cards = () => {
               <input
                 type="text"
                 placeholder="Transmission"
+                name="transmission"
                 value={formData.transmission}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -746,8 +821,10 @@ const Cards = () => {
               <input
                 type="text"
                 placeholder="Motor"
+                name="motor"
                 value={formData.motor}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -757,8 +834,10 @@ const Cards = () => {
               <input
                 type="text"
                 placeholder="Drive side"
+                name="drive_side"
                 value={formData.drive_side}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
             <div className="label">
@@ -767,8 +846,10 @@ const Cards = () => {
               <input
                 type="text"
                 placeholder="Petrol"
+                name="petrol"
                 value={formData.petrol}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -776,10 +857,24 @@ const Cards = () => {
               <label htmlFor="dswrgf">Limitperday</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Limitperday"
+                name="limitperday"
                 value={formData.limitperday}
                 onChange={handleChange}
+                maxLength={4}
+              />
+            </div>
+
+            <div className="label">
+              <label htmlFor="">Deposit</label>
+              <br />
+              <input
+                type="number"
+                name="deposit"
+                value={formData.deposit}
+                onChange={handleChange}
+                maxLength={4}
               />
             </div>
 
@@ -787,108 +882,137 @@ const Cards = () => {
               <label htmlFor="dswrgf">Premium protection</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Premium protection"
+                name="premium_protection"
                 value={formData.premium_protection}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
             <div className="label">
               <label htmlFor="dswrgf">Price in AED</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Price in AED"
+                name="price_in_aed"
                 value={formData.price_in_aed}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
             <div className="label">
               <label htmlFor="dswrgf">Price in USD</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Price in USD"
+                name="price_in_usd"
                 value={formData.price_in_usd}
                 onChange={handleChange}
+                maxLength={4}
               />
             </div>
             <div className="label">
               <label htmlFor="dswrgf">Price in AED sale</label>
               <br />
               <input
-                type="text"
+                type="number"
                 placeholder="Price in USD"
+                name="price_in_aed_sale"
                 value={formData.price_in_aed_sale}
+                onChange={handleChange}
+                maxLength={4}
               />
             </div>
+
             <div className="label">
               <label htmlFor="dswrgf">Price in USD sale</label>
+              <br />
+              <input type="number"  placeholder="Price in USD" name="price_in_usd_sale" maxLength={4} value={formData.price_in_usd_sale} onChange={handleChange}  />
+            </div>
+
+
+            <div className="label">
+              <label htmlFor="inclusive">Inclusive:</label>
               <br />
               <input
-                type="text"
-                placeholder="Price in USD sale"
-                value={formData.price_in_usd_sale}
+                type="checkbox"
+                name="inclusive"
+                checked={formData.inclusive}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    inclusive: e.target.checked,
+                  }))
+                }
               />
             </div>
 
             <div className="label">
-              <label htmlFor="dswrgf">Cover</label>
+              <label htmlFor="cover">Cover:</label>
               <br />
-              <input type="file" name="cover" onChange={handleChange} />
+              <input type="file" 
+               name="cover"
+               multiple 
+               accept="image/png"
+               onChange={handleChange}/>
+
             </div>
 
             <div className="label">
-              <label htmlFor="dswrgf">Price in USD sale</label>
+              <label htmlFor="dswrgf">images 1</label>
               <br />
               <input
                 type="file"
-                placeholder="Price in USD sale"
-                value={formData.price_in_usd_sale}
-              />
-            </div>
-
-            <div className="label">
-              <label htmlFor="dswrgf">Price in USD sale</label>
-              <br />
-              <input
-                type="file"
-                placeholder="Price in USD sale"
-                value={formData.price_in_usd_sale}
+                name="images"
+                multiple
+                accept="image/png"
                 onChange={handleChange}
               />
             </div>
 
+            <div className="label">
+              <label htmlFor="dswrgf">images 2</label>
+              <br />
+              <input
+                type="file"
+                name="images"
+                multiple
+                accept="image/png"
+                onChange={handleChange}
+              />
+            </div>
+
+            {/* < ---  Select  */}
 
             <div className="label">
               <label htmlFor="">Brand title</label> <br />
               <select
-                name="brandTitle"
+                name="brand_id"
                 value={formData.brand_id}
                 onChange={handleChange}
               >
+                <option value="">Select Brand</option>
                 {brands.map((item) => (
-                  <option key={item.id} value={item.brand_id}>
+                  <option key={item.id} value={item.id}>
                     {item.title}
                   </option>
                 ))}
               </select>
             </div>
+
             <div className="label">
               <label htmlFor="">Model title</label> <br />
-              <select value={formData.model_id} onChange={handleChange}>
+              <select
+                name="model_id"
+                value={formData.model_id}
+                onChange={handleChange}
+              >
+                <option value="">Select Model</option>
                 {models.map((item) => (
-                  <option key={item.id} value={item.model_id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="label">
-              <label htmlFor="">Citiy id</label> <br />
-              <select value={formData.city_id} onChange={handleChange}>
-                {cities.map((item) => (
-                  <option key={item.id} value={item.city_id}>
+                  <option key={item.id} value={item.id}>
                     {item.name}
                   </option>
                 ))}
@@ -896,30 +1020,61 @@ const Cards = () => {
             </div>
 
             <div className="label">
-              <label htmlFor="">Category title</label> <br />
-              <select value={formData.category_id} onChange={handleChange}>
+              <label htmlFor="">City</label> <br />
+              <select
+                name="city_id"
+                value={formData.city_id}
+                onChange={handleChange}
+              >
+                <option value="">Select City</option>
+                {cities.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="label">
+              <label htmlFor="">Category</label> <br />
+              <select
+                name="category_id"
+                value={formData.category_id}
+                onChange={handleChange}
+              >
+                <option value="">Select Category</option>
                 {categories.map((item) => (
-                  <option key={item.id} value={item.category_id}>
+                  <option key={item.id} value={item.id}>
                     {item.name_en}
                   </option>
                 ))}
               </select>
             </div>
+
             <div className="label">
-              <label htmlFor="">Location title</label> <br />
-              <select value={formData.location_id} onChange={handleChange}>
+              <label htmlFor="">Location</label> <br />
+              <select
+                name="location_id"
+                value={formData.location_id}
+                onChange={handleChange}
+              >
+                <option value="">Select Location</option>
                 {locations.map((item) => (
-                  <option key={item.id} value={item.location_id}>
+                  <option key={item.id} value={item.id}>
                     {item.text}
                   </option>
                 ))}
               </select>
             </div>
 
-            <button type="submit">Submit</button>
+            <button type="submit" disabled={loding}>
+                   
+                   {loding ? "Loadding ... " : "Submit"}
+               
+            </button>
           </form>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
