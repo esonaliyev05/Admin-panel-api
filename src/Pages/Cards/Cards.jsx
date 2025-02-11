@@ -211,32 +211,33 @@ const Cards = () => {
           toast.success("Ma'lumot muvaffaqiyatli qo'shildi!");
           setPost(false);
           getCategory();
-          setFormData({
-            brand_id: "",
-            model_id: "",
-            city_id: "",
-            color: "",
-            year: "",
-            seconds: "",
-            category_id: "",
-            max_speed: "",
-            max_people: "",
-            transmission: "",
-            motor: "",
-            drive_side: "",
-            petrol: "",
-            limitperday: "",
-            deposit: "",
-            premium_protection: "",
-            price_in_aed: "",
-            price_in_usd: "",
-            price_in_aed_sale: "",
-            price_in_usd_sale: "",
-            images: [], 
-            location_id: "",
-            inclusive: "",
-            cover: null,
-          });
+          setFormData(prev => Object.fromEntries(Object.keys(prev).map(key => [key, ""])));
+          // setFormData({
+          //   brand_id: "",
+          //   model_id: "",
+          //   city_id: "",
+          //   color: "",
+          //   year: "",
+          //   seconds: "",
+          //   category_id: "",
+          //   max_speed: "",
+          //   max_people: "",
+          //   transmission: "",
+          //   motor: "",
+          //   drive_side: "",
+          //   petrol: "",
+          //   limitperday: "",
+          //   deposit: "",
+          //   premium_protection: "",
+          //   price_in_aed: "",
+          //   price_in_usd: "",
+          //   price_in_aed_sale: "",
+          //   price_in_usd_sale: "",
+          //   images: [], 
+          //   location_id: "",
+          //   inclusive: "",
+          //   cover: null,
+          // });
           
           
      
@@ -286,7 +287,7 @@ const Cards = () => {
       });
   };
 
-  const handleEditSubmit = async (e) => {
+  const handleEditSubmit = (e) => {
     e.preventDefault();
   
     if (!editingCarId) {
@@ -294,56 +295,53 @@ const Cards = () => {
       return;
     }
   
-    try {
-      const formDataForUpdate = new FormData();
-  
-      Object.entries(formData).forEach(([key, value]) => {
+    const formDataForUpdate = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
         if (key === "files" && value) {
-          Array.from(value).forEach((file) => {
-            formDataForUpdate.append("files", file);
-          });
+            Array.from(value).forEach((file) => {
+                formDataForUpdate.append("files", file);
+            });
         } else if (key === "cover" && value) {
-          formDataForUpdate.append("cover", value instanceof FileList ? value[0] : value);
+            formDataForUpdate.append("cover", value instanceof FileList ? value[0] : value);
         } else if (key === "inclusive") {
-          formDataForUpdate.append(key, value.toString());
+            formDataForUpdate.append(key, value.toString());
         } else if (value !== null && value !== undefined && value !== "") {
-          formDataForUpdate.append(key, value);
+            formDataForUpdate.append(key, value);
         }
-      });
+    });
   
-      const response = await fetch(`https://realauto.limsa.uz/api/cars/${editingCarId}`, {
-        method: "PUT",
-        headers: {
+    fetch(`https://realauto.limsa.uz/api/cars/${editingCarId}`, {
+      method: "PUT",
+      headers: {
           Authorization: `Bearer ${tokenbek}`,
-        },
-        body: formDataForUpdate,
-      });
-  
-      const result = await response.json();
-  
-      if (response.ok && result.success) {
+      },
+      body: formDataForUpdate,
+  })
+
+
+  .then((response) => response.json())
+.then((result) => {
+    if (result.success) {
         toast.success("Ma'lumot muvaffaqiyatli yangilandi!");
         setEdit(false);
         setEditingCarId(null);
-        setFormData({}); // Formani tozalash
-        getCategory(); // Ro‘yxatni qayta yuklash
-      } else {
+        setFormData({});
+        getCategory();
+    } else {
         toast.error("Xatolik yuz berdi: " + (result.message || "Noma'lum xatolik"));
         console.error("Xatolik tafsilotlari:", result);
-      }
-    } catch (error) {
-      console.error("Xatolik:", error);
-      toast.error("Server bilan bog‘lanishda muammo yuz berdi!");
     }
+})
+.catch((error) => {
+    console.error("Xatolik:", error);
+    toast.error("Server bilan bog‘lanishda muammo yuz berdi!");
+});
   };
+  
   console.log("Tahrir qilinayotgan mashina ID:", editingCarId);
 
-
   
   
-  
-
-
   return (
     <div className="Cards">
       <div className="container">
