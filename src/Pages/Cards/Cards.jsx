@@ -340,6 +340,11 @@ const Cards = () => {
 
   console.log("Tahrir qilinayotgan mashina ID:", editingCarId);
 
+  // const images = car.car_images.map(
+  //   (img) => `https://realauto.limsa.uz/api/uploads/images/${img.image.src}`
+  // );
+
+
   return (
     <div className="Cards">
       <div className="container">

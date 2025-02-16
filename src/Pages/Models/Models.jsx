@@ -16,6 +16,8 @@ const Models = () => {
   });
 
   const token = localStorage.getItem("token");
+   
+  console.log( "kalayotgan token" , token);
 
   const getCategory = () => {
     setIsLoading(true);
