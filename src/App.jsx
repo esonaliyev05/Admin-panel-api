@@ -19,12 +19,16 @@ function App() {
   return (
     <>
       <Routes>
+        {/* Agar foydalanuvchi login qilmagan bo'lsa, /home yoki /registor sahifasiga o'tish mumkin emas */}
         <Route path="/" element={<Login />} />
         <Route
           path="/home"
-          element={isAuthenticated ? <Home /> : <Navigate to="/" />}
+          element={isAuthenticated ? <Home /> : <Navigate to="/" replace />}
         />
-        <Route path="/registor" element={<Register />} />
+        <Route
+          path="/registor"
+          element={isAuthenticated ? <Register /> : <Navigate to="/" replace />}
+        />
       </Routes>
       <ToastContainer />
     </>
