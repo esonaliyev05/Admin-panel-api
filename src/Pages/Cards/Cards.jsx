@@ -337,7 +337,6 @@ const Cards = () => {
         toast.error("Server bilan bog‘lanishda muammo yuz berdi!");
       });
   };
-
   console.log("Tahrir qilinayotgan mashina ID:", editingCarId);
 
   return (
@@ -382,6 +381,7 @@ const Cards = () => {
                         <img
                           src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
                           alt="Car"
+                          
                         />
                       </td>
                       {/* <td>
