@@ -344,7 +344,6 @@ const Cards = () => {
   //   (img) => `https://realauto.limsa.uz/api/uploads/images/${img.image.src}`
   // );
 
-
   return (
     <div className="Cards">
       <div className="container">
@@ -385,9 +384,9 @@ const Cards = () => {
                       <td>{item?.petrol}</td>
                       <td>
                         <img
-                           src={`https://realauto.limsa.uz/api/uploads/images/${item?.car_images[0]?.image?.src}`}
+                          src={`https://realauto.limsa.uz/api/uploads/images/${item?.car_images[0]?.image?.src}`}
                           alt="Car"
-                          style={{width: "120px"}}
+                          style={{ width: "120px" }}
                         />
                       </td>
                       {/* <td>
