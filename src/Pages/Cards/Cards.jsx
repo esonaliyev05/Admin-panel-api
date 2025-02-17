@@ -378,10 +378,12 @@ const Cards = () => {
                       <td>{item?.motor}</td>
                       <td>{item?.drive_side}</td>
                       <td>{item?.petrol}</td>
+                      <td>{item?.color}</td>
                       <td>
                         <img
-                          src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`}
+                          src={`https://realauto.limsa.uz/api/uploads/images/${item?.car_images[0]?.image?.src}`}
                           alt="Car"
+                          style={{width: "120px"}}
                         />
                       </td>
                       {/* <td>
