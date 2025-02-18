@@ -208,14 +208,14 @@ const Models = () => {
                       <td>{item?.brand_id}</td>
                       <td>
                         <button onClick={() => deleteCategory(item.id)}>
-                          O'chirish
+                          delet
                         </button>
                       </td>
-                      <td>
+                      <th>
                         <button onClick={() => handleEdit(item)}>
-                          Tahrirlash
+                          edit
                         </button>
-                      </td>
+                      </th>
                     </tr>
                   ))
                 ) : (

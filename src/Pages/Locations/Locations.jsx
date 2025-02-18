@@ -249,9 +249,9 @@ const Locations = () => {
                         Delete
                       </button>
                     </td>
-                    <td>
+                    <th>
                       <button onClick={() => handleEdit(item)}>Edit</button>
-                    </td>
+                    </th>
                   </tr>
                 ))}
               </tbody>

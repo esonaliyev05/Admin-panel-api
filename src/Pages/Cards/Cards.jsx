@@ -394,9 +394,9 @@ const Cards = () => {
                           delet
                         </button>
                       </td>
-                      <td>
+                      <th>
                         <button onClick={() => setEdit(true)}>edit</button>
-                      </td>
+                      </th>
                     </tr>
                   ))
                 ) : (
