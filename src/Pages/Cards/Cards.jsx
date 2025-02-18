@@ -366,6 +366,8 @@ const Cards = () => {
                   <th>Name</th>
                   <th>Title</th>
                   <th>Edit</th>
+                  <th>mootor</th>
+                  <th>color</th>
                 </tr>
               </thead>
               <tbody className="data-count-get">
